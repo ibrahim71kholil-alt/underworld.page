@@ -3,51 +3,67 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Underworld | Official Store</title>
+  <title>Underworld - Admin Dashboard</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: #0b0c10; color: #fff; }
-    header { background: #1f2833; padding: 20px; text-align: center; border-bottom: 2px solid #e63946; }
-    header h1 { font-size: 28px; letter-spacing: 3px; color: #fff; text-transform: uppercase; }
-    header span { color: #e63946; }
-    .filter-section { display: flex; justify-content: center; gap: 10px; margin: 25px 15px; flex-wrap: wrap; }
-    .filter-btn { background: #1f2833; border: 1px solid #45a29e; color: #c5c6c7; padding: 10px 18px; border-radius: 25px; cursor: pointer; font-size: 14px; transition: 0.3s; }
-    .filter-btn.active, .filter-btn:hover { background: #e63946; color: #fff; border-color: #e63946; }
-    .container { max-width: 1100px; margin: 0 auto; padding: 0 15px 50px; }
-    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-    .card { background: #141b22; border-radius: 8px; overflow: hidden; border: 1px solid #222; transition: 0.3s; display: flex; flex-direction: column; }
-    .card:hover { transform: translateY(-5px); border-color: #e63946; }
-    .card img { width: 100%; height: 250px; object-fit: cover; background: #222; }
-    .card-body { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-    .card h3 { font-size: 16px; margin-bottom: 8px; color: #fff; }
-    .card .price { color: #66fcf1; font-size: 18px; font-weight: bold; margin-bottom: 12px; }
-    .buy-btn { width: 100%; padding: 10px; background: #e63946; border: none; color: #fff; font-weight: bold; border-radius: 5px; cursor: pointer; transition: 0.2s; }
-    .buy-btn:hover { background: #c0392b; }
-    .loading { text-align: center; color: #66fcf1; font-size: 18px; grid-column: 1 / -1; }
+    body { background-color: #0b0c10; color: #c5c6c7; padding: 20px; }
+    .container { max-width: 700px; margin: 0 auto; }
+    h2, h3 { color: #66fcf1; margin-bottom: 15px; }
+    .card { background: #1f2833; border: 1px solid #45a29e; padding: 25px; border-radius: 8px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+    input, select, button { width: 100%; padding: 12px; margin: 10px 0; border-radius: 6px; border: 1px solid #45a29e; background: #0b0c10; color: #fff; font-size: 15px; }
+    input:focus, select:focus { outline: 2px solid #66fcf1; }
+    button { background: #66fcf1; color: #0b0c10; font-weight: bold; cursor: pointer; border: none; transition: 0.3s; }
+    button:hover { background: #45a29e; color: #fff; }
+    .logout-btn { background: #e63946; color: #fff; margin-bottom: 20px; width: auto; padding: 8px 18px; float: right; }
+    .logout-btn:hover { background: #c0392b; }
+    .product-row { display: flex; justify-content: space-between; align-items: center; background: #141b22; padding: 12px; margin-bottom: 10px; border-radius: 6px; border-left: 4px solid #66fcf1; }
+    .del-btn { width: auto; background: #e63946; color: #fff; padding: 6px 14px; margin: 0; font-size: 13px; }
+    .del-btn:hover { background: #c0392b; }
+    #loginSection, #dashboardSection { display: none; }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>Under<span>world</span></h1>
-  </header>
-
-  <div class="filter-section">
-    <button class="filter-btn active" onclick="filterItems('all', this)">🔥 All Items</button>
-    <button class="filter-btn" onclick="filterItems('men', this)">👕 Men's Fashion</button>
-    <button class="filter-btn" onclick="filterItems('women', this)">👗 Women's Fashion</button>
-    <button class="filter-btn" onclick="filterItems('sports', this)">⚽ Sports</button>
-  </div>
-
   <div class="container">
-    <div id="productGrid" class="product-grid">
-      <div class="loading">প্রোডাক্ট লোড হচ্ছে...</div>
+    <!-- Login Screen -->
+    <div id="loginSection" class="card">
+      <h2>Underworld Admin Login</h2>
+      <input type="email" id="loginEmail" placeholder="অ্যাডমিন ইমেইল" required>
+      <input type="password" id="loginPassword" placeholder="পাসওয়ার্ড" required>
+      <button id="loginBtn">লগইন করুন</button>
+    </div>
+
+    <!-- Dashboard Screen -->
+    <div id="dashboardSection">
+      <button class="logout-btn" id="logoutBtn">লগআউট</button>
+      <div style="clear: both;"></div>
+
+      <div class="card">
+        <h3>➕ নতুন প্রোডাক্ট যোগ করুন</h3>
+        <form id="addProductForm">
+          <input type="text" id="pName" placeholder="প্রোডাক্টের নাম" required>
+          <input type="number" id="pPrice" placeholder="দাম (৳)" required>
+          <select id="pCategory" required>
+            <option value="men">👕 Men's Fashion</option>
+            <option value="women">👗 Women's Fashion</option>
+            <option value="sports">⚽ Sports</option>
+          </select>
+          <input type="url" id="pImage" placeholder="ছবির ডিরেক্ট URL (ImgBB/অনলাইন লিংক)" required>
+          <button type="submit">প্রোডাক্ট পাবলিশ করুন</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3>📦 বর্তমান প্রোডাক্ট তালিকা</h3>
+        <div id="productList">ডেটা লোড হচ্ছে...</div>
+      </div>
     </div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBgcJFRNOfOdg4ntCjb6LwA8J-fvxPfrPM",
@@ -59,55 +75,86 @@
     };
 
     const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
     const db = getFirestore(app);
 
-    let products = [];
+    // Auth State
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.getElementById("loginSection").style.display = "none";
+        document.getElementById("dashboardSection").style.display = "block";
+        loadProducts();
+      } else {
+        document.getElementById("loginSection").style.display = "block";
+        document.getElementById("dashboardSection").style.display = "none";
+      }
+    });
 
-    async function fetchProducts() {
-      const grid = document.getElementById("productGrid");
+    // Login
+    document.getElementById("loginBtn").addEventListener("click", () => {
+      const email = document.getElementById("loginEmail").value;
+      const pass = document.getElementById("loginPassword").value;
+      signInWithEmailAndPassword(auth, email, pass)
+        .catch(err => alert("ভুল ইমেইল বা পাসওয়ার্ড: " + err.message));
+    });
+
+    // Logout
+    document.getElementById("logoutBtn").addEventListener("click", () => signOut(auth));
+
+    // Add Product
+    document.getElementById("addProductForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        await addDoc(collection(db, "products"), {
+          name: document.getElementById("pName").value,
+          price: Number(document.getElementById("pPrice").value),
+          category: document.getElementById("pCategory").value,
+          imageUrl: document.getElementById("pImage").value,
+          createdAt: serverTimestamp()
+        });
+        alert("প্রোডাক্ট সফলভাবে যোগ হয়েছে!");
+        document.getElementById("addProductForm").reset();
+        loadProducts();
+      } catch (err) {
+        alert("সমস্যা হয়েছে: " + err.message);
+      }
+    });
+
+    // Load & Delete Products
+    async function loadProducts() {
+      const list = document.getElementById("productList");
+      list.innerHTML = "লোড হচ্ছে...";
       try {
         const querySnapshot = await getDocs(collection(db, "products"));
-        products = [];
-        querySnapshot.forEach(doc => products.push({ id: doc.id, ...doc.data() }));
-        render('all');
-      } catch (err) {
-        grid.innerHTML = `<div class="loading">ইরর: ${err.message}</div>`;
-      }
-    }
-
-    window.filterItems = (cat, btn) => {
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      render(cat);
-    };
-
-    function render(category) {
-      const grid = document.getElementById("productGrid");
-      grid.innerHTML = "";
-      const filtered = category === 'all' ? products : products.filter(p => p.category === category);
-
-      if (filtered.length === 0) {
-        grid.innerHTML = `<div class="loading">কোনো প্রোডাক্ট পাওয়া যায়নি।</div>`;
-        return;
-      }
-
-      filtered.forEach(p => {
-        grid.innerHTML += `
-          <div class="card">
-            <img src="${p.imageUrl}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/250?text=No+Image'">
-            <div class="card-body">
-              <div>
-                <h3>${p.name}</h3>
-                <div class="price">৳ ${p.price}</div>
-              </div>
-              <button class="buy-btn" onclick="alert('অর্ডার সিস্টেম শীঘ্রই চালু হবে!')">Order Now</button>
+        list.innerHTML = "";
+        if (querySnapshot.empty) {
+          list.innerHTML = "<p>কোনো প্রোডাক্ট নেই।</p>";
+          return;
+        }
+        querySnapshot.forEach((d) => {
+          const item = d.data();
+          const row = document.createElement("div");
+          row.className = "product-row";
+          row.innerHTML = `
+            <div>
+              <strong>${item.name}</strong> - ৳${item.price} <br>
+              <small style="color: #66fcf1;">ক্যাটাগরি: ${item.category}</small>
             </div>
-          </div>
-        `;
-      });
+            <button class="del-btn" onclick="removeProduct('${d.id}')">Delete</button>
+          `;
+          list.appendChild(row);
+        });
+      } catch (err) {
+        list.innerHTML = "ইরর: " + err.message;
+      }
     }
 
-    fetchProducts();
+    window.removeProduct = async (id) => {
+      if (confirm("আপনি কি নিশ্চিত এটি ডিলিট করতে চান?")) {
+        await deleteDoc(doc(db, "products", id));
+        loadProducts();
+      }
+    };
   </script>
 </body>
 </html>
