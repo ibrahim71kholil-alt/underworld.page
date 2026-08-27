@@ -1,1 +1,113 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Underworld | Official Store</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #0b0c10; color: #fff; }
+    header { background: #1f2833; padding: 20px; text-align: center; border-bottom: 2px solid #e63946; }
+    header h1 { font-size: 28px; letter-spacing: 3px; color: #fff; text-transform: uppercase; }
+    header span { color: #e63946; }
+    .filter-section { display: flex; justify-content: center; gap: 10px; margin: 25px 15px; flex-wrap: wrap; }
+    .filter-btn { background: #1f2833; border: 1px solid #45a29e; color: #c5c6c7; padding: 10px 18px; border-radius: 25px; cursor: pointer; font-size: 14px; transition: 0.3s; }
+    .filter-btn.active, .filter-btn:hover { background: #e63946; color: #fff; border-color: #e63946; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 15px 50px; }
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+    .card { background: #141b22; border-radius: 8px; overflow: hidden; border: 1px solid #222; transition: 0.3s; display: flex; flex-direction: column; }
+    .card:hover { transform: translateY(-5px); border-color: #e63946; }
+    .card img { width: 100%; height: 250px; object-fit: cover; background: #222; }
+    .card-body { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .card h3 { font-size: 16px; margin-bottom: 8px; color: #fff; }
+    .card .price { color: #66fcf1; font-size: 18px; font-weight: bold; margin-bottom: 12px; }
+    .buy-btn { width: 100%; padding: 10px; background: #e63946; border: none; color: #fff; font-weight: bold; border-radius: 5px; cursor: pointer; transition: 0.2s; }
+    .buy-btn:hover { background: #c0392b; }
+    .loading { text-align: center; color: #66fcf1; font-size: 18px; grid-column: 1 / -1; }
+  </style>
+</head>
+<body>
 
+  <header>
+    <h1>Under<span>world</span></h1>
+  </header>
+
+  <div class="filter-section">
+    <button class="filter-btn active" onclick="filterItems('all', this)">🔥 All Items</button>
+    <button class="filter-btn" onclick="filterItems('men', this)">👕 Men's Fashion</button>
+    <button class="filter-btn" onclick="filterItems('women', this)">👗 Women's Fashion</button>
+    <button class="filter-btn" onclick="filterItems('sports', this)">⚽ Sports</button>
+  </div>
+
+  <div class="container">
+    <div id="productGrid" class="product-grid">
+      <div class="loading">প্রোডাক্ট লোড হচ্ছে...</div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBgcJFRNOfOdg4ntCjb6LwA8J-fvxPfrPM",
+      authDomain: "underworld-f7aae.firebaseapp.com",
+      projectId: "underworld-f7aae",
+      storageBucket: "underworld-f7aae.firebasestorage.app",
+      messagingSenderId: "1054711880818",
+      appId: "1:1054711880818:web:4ce58efcb3dbd3374ab6eb"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let products = [];
+
+    async function fetchProducts() {
+      const grid = document.getElementById("productGrid");
+      try {
+        const querySnapshot = await getDocs(collection(db, "products"));
+        products = [];
+        querySnapshot.forEach(doc => products.push({ id: doc.id, ...doc.data() }));
+        render('all');
+      } catch (err) {
+        grid.innerHTML = `<div class="loading">ইরর: ${err.message}</div>`;
+      }
+    }
+
+    window.filterItems = (cat, btn) => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      render(cat);
+    };
+
+    function render(category) {
+      const grid = document.getElementById("productGrid");
+      grid.innerHTML = "";
+      const filtered = category === 'all' ? products : products.filter(p => p.category === category);
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="loading">কোনো প্রোডাক্ট পাওয়া যায়নি।</div>`;
+        return;
+      }
+
+      filtered.forEach(p => {
+        grid.innerHTML += `
+          <div class="card">
+            <img src="${p.imageUrl}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/250?text=No+Image'">
+            <div class="card-body">
+              <div>
+                <h3>${p.name}</h3>
+                <div class="price">৳ ${p.price}</div>
+              </div>
+              <button class="buy-btn" onclick="alert('অর্ডার সিস্টেম শীঘ্রই চালু হবে!')">Order Now</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    fetchProducts();
+  </script>
+</body>
+</html>
