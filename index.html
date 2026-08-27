@@ -4,19 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Underworld - Wear Your Identity</title>
-  <!-- Google Fonts যোগ করা হলো হুবহু ডিজাইনের ফন্টের জন্য -->
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   
   <style>
-    /* CSS Variables for Exact Color Matching */
+    /* CSS Variables */
     :root {
-      --bg-color: #FAF7F2;         /* Soft Cream / Off-White */
-      --footer-bg: #F0EBE1;        /* Slightly darker beige for footer */
-      --text-main: #1A1A1A;        /* Dark Charcoal / Almost Black */
-      --heading-color: #70421d;    /* Warm Brown for Titles */
-      --primary-btn: #1A1A1A;      /* Black Buttons */
-      --badge-red: #ff3b30;        /* Bright Red for badges/hearts */
-      --border-light: #E8E2D6;     /* Light border */
+      --bg-color: #FAF7F2;         
+      --footer-bg: #F0EBE1;        
+      --text-main: #1A1A1A;        
+      --heading-color: #70421d;    
+      --primary-btn: #1A1A1A;      
+      --badge-red: #ff3b30;        
+      --border-light: #E8E2D6;     
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -25,15 +24,23 @@
 
     /* Header */
     header { background: var(--bg-color); position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-    .navbar { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 20px; }
-    .logo { font-size: 26px; font-weight: 700; letter-spacing: 1px; color: var(--text-main); text-decoration: none; text-transform: uppercase; }
-    .nav-icons { display: flex; align-items: center; gap: 22px; }
-    .nav-icons span { cursor: pointer; font-size: 19px; color: var(--text-main); transition: 0.2s; position: relative; }
-    .nav-icons span:hover { color: var(--heading-color); }
-    .lang-btn { background: transparent; color: var(--text-main); border: 1px solid var(--text-main); padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600; font-family: 'Inter', sans-serif; }
-    .badge-count { position: absolute; top: -6px; right: -8px; background: var(--badge-red); color: #fff; font-size: 10px; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+    .navbar { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 20px; gap: 30px; }
+    .logo { font-size: 24px; font-weight: 700; letter-spacing: 1px; color: var(--text-main); text-decoration: none; text-transform: uppercase; white-space: nowrap; }
+    
+    /* Header Search Box (Middle) */
+    .header-search { flex-grow: 1; max-width: 450px; position: relative; }
+    .header-search input { width: 100%; padding: 10px 15px 10px 40px; border: 1px solid var(--border-light); border-radius: 4px; font-size: 14px; background: #fff; outline: none; transition: 0.3s; }
+    .header-search input:focus { border-color: var(--heading-color); }
+    .header-search .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #777; width: 18px; height: 18px; }
+    .search-dropdown { position: absolute; top: 110%; left: 0; width: 100%; background: #fff; border: 1px solid var(--border-light); border-radius: 4px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-height: 300px; overflow-y: auto; display: none; z-index: 1100; }
 
-    /* Hero Slider Banner (Left Aligned) */
+    /* Nav Icons (Right) */
+    .nav-icons { display: flex; align-items: center; gap: 20px; }
+    .lang-btn { background: transparent; color: var(--text-main); border: 1px solid var(--text-main); padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600; font-family: 'Inter', sans-serif; }
+    .nav-icons svg { width: 22px; height: 22px; cursor: pointer; stroke: var(--text-main); stroke-width: 1.5; fill: none; transition: 0.2s; }
+    .nav-icons svg:hover { stroke: var(--heading-color); }
+
+    /* Hero Slider Banner */
     .hero-slider { position: relative; height: 550px; overflow: hidden; background: #E8DFD3; }
     .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1s ease-in-out, transform 1s ease-in-out; display: flex; align-items: center; justify-content: flex-start; padding-left: 8%; background-size: cover; background-position: center; }
     .slide.active { opacity: 1; transform: scale(1); }
@@ -61,8 +68,12 @@
     .product-img-box img { width: 100%; height: 100%; object-fit: cover; transition: 0.6s; }
     .product-card:hover .product-img-box img { transform: scale(1.05); }
     .badge { position: absolute; top: 12px; left: 12px; background: var(--heading-color); color: #fff; font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 600; text-transform: uppercase; }
-    .wishlist-icon { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.9); width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-    .wishlist-icon.active { color: var(--badge-red); }
+    
+    /* Product Card Heart Icon */
+    .card-heart-icon { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.9); width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .card-heart-icon svg { width: 18px; height: 18px; stroke: var(--text-main); stroke-width: 1.5; fill: none; transition: 0.2s; }
+    .card-heart-icon.active svg { stroke: var(--badge-red); fill: var(--badge-red); }
+
     .product-details { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; }
     .product-title { font-size: 15px; font-weight: 600; margin-bottom: 8px; color: var(--text-main); line-height: 1.4; }
     .price-box { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
@@ -71,14 +82,12 @@
     .stock-tag { font-size: 12px; color: #27ae60; font-weight: 600; }
     .out-stock { color: var(--badge-red); }
 
-    /* Modals (Search, Wishlist, Detail) */
+    /* Modals */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(5px); }
     .modal-box { background: var(--bg-color); width: 600px; max-width: 90%; border-radius: 8px; padding: 30px; position: relative; max-height: 80vh; overflow-y: auto; }
     .modal-close { position: absolute; top: 15px; right: 20px; font-size: 26px; cursor: pointer; color: #555; transition: 0.2s; }
     .modal-close:hover { color: var(--badge-red); }
-    .search-input { width: 100%; padding: 14px; border: 1px solid var(--border-light); border-radius: 4px; font-size: 15px; margin-top: 15px; background: #fff; outline: none; }
-    .search-input:focus { border-color: var(--heading-color); }
-
+    
     .detail-content { background: var(--bg-color); width: 950px; max-width: 95%; border-radius: 8px; overflow: hidden; display: flex; position: relative; box-shadow: 0 15px 50px rgba(0,0,0,0.2); }
     .modal-img-section { width: 50%; background: #fff; padding: 25px; display: flex; flex-direction: column; gap: 15px; }
     .modal-main-img { width: 100%; height: 400px; object-fit: cover; border-radius: 4px; }
@@ -101,9 +110,6 @@
     .footer-col ul li { margin-bottom: 12px; }
     .footer-col ul li a, .footer-col p { color: #555; text-decoration: none; font-size: 14px; line-height: 1.8; transition: 0.2s; }
     .footer-col ul li a:hover { color: var(--heading-color); }
-    .social-icons { display: flex; gap: 15px; margin-top: 20px; }
-    .social-icons a { background: transparent; border: 1px solid var(--text-main); color: var(--text-main); width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 15px; transition: 0.3s; }
-    .social-icons a:hover { background: var(--text-main); color: #fff; }
     .footer-bottom { text-align: center; font-size: 13px; color: #777; border-top: 1px solid var(--border-light); padding-top: 25px; }
     .loading { text-align: center; grid-column: 1 / -1; padding: 50px; font-size: 18px; color: #666; }
   </style>
@@ -113,28 +119,60 @@
   <!-- Navbar -->
   <header>
     <div class="navbar">
+      <!-- Logo -->
       <a href="#" class="logo">🛍️ Underworld</a>
+      
+      <!-- Middle Search Box -->
+      <div class="header-search">
+        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="liveSearchInput" placeholder="Search products..." oninput="handleHeaderSearch(this.value)">
+        <div class="search-dropdown" id="searchDropdown"></div>
+      </div>
+
+      <!-- Right Icons -->
       <div class="nav-icons">
         <button class="lang-btn" id="langToggle">BN</button>
-        <span onclick="openSearchModal()" title="Search">🔍</span>
-        <span onclick="openWishlistModal()" title="Wishlist">❤️<span class="badge-count" id="wishlistCount">0</span></span>
-        <span onclick="alert('Cart will be added later!')" title="Cart">🛒</span>
+        
+        <!-- User Icon -->
+        <span onclick="alert('User login coming soon!')" title="Account">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </span>
+        
+        <!-- Heart/Wishlist Icon (No Zero Badge) -->
+        <span onclick="openWishlistModal()" title="Wishlist">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+        </span>
+        
+        <!-- Cart/Bag Icon -->
+        <span onclick="alert('Cart will be added later!')" title="Cart">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+        </span>
       </div>
     </div>
   </header>
 
   <!-- Hero Slider -->
   <div class="hero-slider">
-    <!-- Women's Banner -->
-    <div class="slide active" style="background-image: url('https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1600&auto=format&fit=crop');">
+    <!-- Women's Banner (Updated to group image) -->
+    <div class="slide active" style="background-image: url('https://images.unsplash.com/photo-1529139574466-a303027c028c?q=80&w=1600&auto=format&fit=crop');">
       <div class="slide-content">
         <h1>THE SIGNATURE OF STYLE!</h1>
         <p>WEAR YOUR IDENTITY</p>
         <button class="shop-btn" onclick="filterItems('women')">SHOP NOW</button>
       </div>
     </div>
-    <!-- Men's Banner -->
-    <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?q=80&w=1600&auto=format&fit=crop');">
+    <!-- Men's Banner (Updated to group image) -->
+    <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1516826957135-700ede19c6ce?q=80&w=1600&auto=format&fit=crop');">
       <div class="slide-content">
         <h1>ELEVATE YOUR AURA</h1>
         <p>WEAR YOUR IDENTITY</p>
@@ -173,16 +211,6 @@
     <h2 class="section-title" id="pop-title-text">Popular Products</h2>
     <div id="productGrid" class="product-grid">
       <div class="loading">Loading products...</div>
-    </div>
-  </div>
-
-  <!-- Search Modal -->
-  <div class="modal-overlay" id="searchModal">
-    <div class="modal-box">
-      <span class="modal-close" onclick="closeSearchModal()">&times;</span>
-      <h3 style="font-family:'Playfair Display',serif; color:var(--heading-color);">Search Products</h3>
-      <input type="text" id="searchInput" class="search-input" placeholder="Search by name..." oninput="handleSearch(this.value)">
-      <div id="searchResults" style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px; max-height: 350px; overflow-y: auto;"></div>
     </div>
   </div>
 
@@ -228,12 +256,6 @@
       <div class="footer-col">
         <h4 id="footer-social-title">THE VOID LABEL</h4>
         <p id="footer-desc">Timeless style, modern vibe. Curated fashion for every you.</p>
-        <div class="social-icons">
-          <a href="#">fb</a>
-          <a href="#">ig</a>
-          <a href="#">tt</a>
-          <a href="#">pi</a>
-        </div>
       </div>
       <div class="footer-col">
         <h4 id="footer-help-title">HELP</h4>
@@ -326,7 +348,6 @@
         products = [];
         querySnapshot.forEach(doc => products.push({ id: doc.id, ...doc.data() }));
         render('all');
-        updateWishlistCount();
       } catch (err) {
         grid.innerHTML = `<div class="loading">Error: ${err.message}</div>`;
       }
@@ -358,7 +379,14 @@
             <div class="product-img-box">
               <img src="${imgs[0]}" alt="${p.name}">
               ${p.oldPrice && p.oldPrice > p.price ? '<span class="badge">Sale</span>' : ''}
-              <div class="wishlist-icon ${isFav ? 'active' : ''}" onclick="event.stopPropagation(); toggleWishlist('${p.name}')">❤️</div>
+              
+              <!-- Card Heart Icon -->
+              <div class="card-heart-icon ${isFav ? 'active' : ''}" onclick="event.stopPropagation(); toggleWishlist('${p.name}')">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+              </div>
+
             </div>
             <div class="product-details">
               <div>
@@ -375,19 +403,52 @@
       });
     }
 
+    // New Middle Search Logic
+    window.handleHeaderSearch = (query) => {
+      let dropdown = document.getElementById('searchDropdown');
+      dropdown.innerHTML = "";
+      
+      if (!query.trim()) {
+        dropdown.style.display = "none";
+        return;
+      }
+      
+      let matched = products.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
+      if (matched.length === 0) {
+        dropdown.innerHTML = "<div style='padding:15px; color:#777; text-align:center;'>No products found.</div>";
+      } else {
+        matched.forEach(p => {
+          let imgs = p.imageUrls ? p.imageUrls.split(',').map(s => s.trim()) : [''];
+          dropdown.innerHTML += `
+            <div style="display:flex; align-items:center; gap:12px; padding:12px 15px; border-bottom:1px solid #eee; cursor:pointer;" onclick="openModal(${JSON.stringify(p)}); document.getElementById('searchDropdown').style.display='none'; document.getElementById('liveSearchInput').value='';">
+              <img src="${imgs[0]}" style="width:40px; height:40px; object-fit:cover; border-radius:4px;">
+              <div>
+                <strong style="font-size:14px; color:var(--text-main);">${p.name}</strong><br>
+                <span style="font-size:13px; color:var(--heading-color); font-weight:bold;">৳${p.price}</span>
+              </div>
+            </div>
+          `;
+        });
+      }
+      dropdown.style.display = "block";
+    };
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+      const searchBox = document.querySelector('.header-search');
+      if (!searchBox.contains(event.target)) {
+        document.getElementById('searchDropdown').style.display = 'none';
+      }
+    });
+
     // Wishlist Logic
     window.toggleWishlist = (productName) => {
       let prod = products.find(p => p.name === productName);
       let idx = wishlist.findIndex(item => item.name === productName);
       if (idx > -1) { wishlist.splice(idx, 1); } else { wishlist.push(prod); }
       localStorage.setItem('underworld_wishlist', JSON.stringify(wishlist));
-      updateWishlistCount();
-      render('all');
+      render('all'); // Refresh cards to update heart color
     };
-
-    function updateWishlistCount() {
-      document.getElementById('wishlistCount').innerText = wishlist.length;
-    }
 
     window.openWishlistModal = () => {
       let resultsDiv = document.getElementById('wishlistResults');
@@ -412,32 +473,6 @@
     };
 
     window.closeWishlistModal = () => { document.getElementById('wishlistModal').style.display = "none"; };
-
-    // Search Logic
-    window.openSearchModal = () => { document.getElementById('searchModal').style.display = "flex"; document.getElementById('searchInput').focus(); };
-    window.closeSearchModal = () => { document.getElementById('searchModal').style.display = "none"; };
-
-    window.handleSearch = (query) => {
-      let resDiv = document.getElementById('searchResults');
-      resDiv.innerHTML = "";
-      if (!query.trim()) return;
-      let matched = products.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
-      if (matched.length === 0) {
-        resDiv.innerHTML = "<p style='color:#777;'>No products found.</p>";
-        return;
-      }
-      matched.forEach(p => {
-        let imgs = p.imageUrls ? p.imageUrls.split(',').map(s => s.trim()) : [''];
-        resDiv.innerHTML += `
-          <div style="display:flex; align-items:center; gap:15px; border-bottom:1px solid #E8E2D6; padding-bottom:12px; cursor:pointer;" onclick="openModal(${JSON.stringify(p)}); closeSearchModal();">
-            <img src="${imgs[0]}" style="width:60px; height:60px; object-fit:cover; border-radius:4px;">
-            <div>
-              <strong style="color:var(--text-main);">${p.name}</strong><br><span style="color:var(--heading-color); font-weight:bold;">৳${p.price}</span>
-            </div>
-          </div>
-        `;
-      });
-    };
 
     // Product Modal
     window.openModal = (product) => {
