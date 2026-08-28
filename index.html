@@ -1,517 +1,1111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Underworld - Wear Your Identity</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  
-  <style>
-    /* CSS Variables */
-    :root {
-      --bg-color: #FAF7F2;         
-      --footer-bg: #F0EBE1;        
-      --text-main: #1A1A1A;        
-      --heading-color: #70421d;    
-      --primary-btn: #1A1A1A;      
-      --badge-red: #ff3b30;        
-      --border-light: #E8E2D6;     
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background-color: var(--bg-color); color: var(--text-main); font-family: 'Inter', sans-serif; overflow-x: hidden; }
-    h1, h2, h3, h4, .logo, .section-title { font-family: 'Playfair Display', serif; }
+    <title>UNDERWORLD — Wear Your Identity</title>
 
-    /* Header */
-    header { background: var(--bg-color); position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-    .navbar { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 20px; gap: 30px; }
-    .logo { font-size: 24px; font-weight: 700; letter-spacing: 1px; color: var(--text-main); text-decoration: none; text-transform: uppercase; white-space: nowrap; }
-    
-    /* Header Search Box */
-    .header-search { flex-grow: 1; max-width: 450px; position: relative; }
-    .header-search input { width: 100%; padding: 10px 15px 10px 40px; border: 1px solid var(--border-light); border-radius: 4px; font-size: 14px; background: #fff; outline: none; transition: 0.3s; }
-    .header-search input:focus { border-color: var(--heading-color); }
-    .header-search .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #777; width: 18px; height: 18px; }
-    .search-dropdown { position: absolute; top: 110%; left: 0; width: 100%; background: #fff; border: 1px solid var(--border-light); border-radius: 4px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-height: 300px; overflow-y: auto; display: none; z-index: 1100; }
+    <meta name="description"
+        content="UNDERWORLD — Premium fashion for Men, Women and Sports. Wear Your Identity.">
 
-    /* Nav Icons */
-    .nav-icons { display: flex; align-items: center; gap: 20px; }
-    .lang-btn { background: transparent; color: var(--text-main); border: 1px solid var(--text-main); padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600; font-family: 'Inter', sans-serif; }
-    .nav-icons svg { width: 22px; height: 22px; cursor: pointer; stroke: var(--text-main); stroke-width: 1.5; fill: none; transition: 0.2s; }
-    .nav-icons svg:hover { stroke: var(--heading-color); }
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    /* Hero Slider Banner - FIXED WHITE BOX */
-    .hero-slider { position: relative; height: 550px; overflow: hidden; background: #dcd3c6; }
-    .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.8s ease-in-out, visibility 0.8s; display: flex; align-items: center; justify-content: flex-start; padding-left: 8%; background-size: cover; background-position: center; }
-    .slide.active { opacity: 1; visibility: visible; pointer-events: auto; z-index: 2; }
-    
-    /* Removed the white background and blur from slide-content */
-    .slide-content { max-width: 500px; animation: slideInLeft 0.8s ease; }
-    @keyframes slideInLeft { from { transform: translateX(-40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-    
-    /* Added subtle text-shadow so text is readable over any image */
-    .slide-content h1 { font-size: 42px; margin-bottom: 10px; color: var(--heading-color); line-height: 1.2; text-shadow: 2px 2px 10px rgba(250, 247, 242, 0.8); }
-    .slide-content p { font-size: 15px; margin-bottom: 25px; color: var(--text-main); font-weight: 700; letter-spacing: 1px; text-shadow: 1px 1px 5px rgba(250, 247, 242, 0.8); }
-    
-    .shop-btn { background: var(--primary-btn); color: #fff; padding: 12px 30px; border: none; font-size: 13px; font-weight: 600; letter-spacing: 1px; cursor: pointer; transition: 0.3s; text-decoration: none; display: inline-block; text-transform: uppercase; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-    .shop-btn:hover { background: #333; }
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+        rel="stylesheet">
 
-    /* Categories */
-    .section-title { text-align: center; font-size: 32px; margin: 60px 0 35px; color: var(--heading-color); }
-    .categories-container { display: flex; justify-content: center; gap: 40px; max-width: 1100px; margin: 0 auto 60px; padding: 0 20px; flex-wrap: wrap; }
-    .cat-card { text-align: center; cursor: pointer; text-decoration: none; color: inherit; }
-    .cat-img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; object-position: center top; border: 2px solid transparent; transition: 0.3s; margin-bottom: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.08); background: #eee; }
-    .cat-card:hover .cat-img { transform: translateY(-5px); border-color: var(--heading-color); }
-    .cat-card h4 { font-size: 16px; font-weight: 600; font-family: 'Inter', sans-serif; color: var(--text-main); }
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    /* Products Section */
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px 60px; }
-    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 30px; }
-    .product-card { background: #fff; border-radius: 6px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.04); transition: 0.3s; display: flex; flex-direction: column; cursor: pointer; border: 1px solid var(--border-light); }
-    .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.08); border-color: #d4c5b9; }
-    .product-img-box { position: relative; height: 330px; overflow: hidden; background: #f9f9f9; }
-    .product-img-box img { width: 100%; height: 100%; object-fit: cover; object-position: center top; transition: 0.6s; }
-    .product-card:hover .product-img-box img { transform: scale(1.05); }
-    .badge { position: absolute; top: 12px; left: 12px; background: var(--heading-color); color: #fff; font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 600; text-transform: uppercase; }
-    
-    /* Product Card Heart Icon */
-    .card-heart-icon { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.9); width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-    .card-heart-icon svg { width: 18px; height: 18px; stroke: var(--text-main); stroke-width: 1.5; fill: none; transition: 0.2s; }
-    .card-heart-icon.active svg { stroke: var(--badge-red); fill: var(--badge-red); }
-
-    .product-details { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; }
-    .product-title { font-size: 15px; font-weight: 600; margin-bottom: 8px; color: var(--text-main); line-height: 1.4; }
-    .price-box { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
-    .current-price { font-size: 16px; font-weight: 700; color: var(--text-main); }
-    .old-price { font-size: 14px; color: #999; text-decoration: line-through; }
-    .stock-tag { font-size: 12px; color: #27ae60; font-weight: 600; }
-    .out-stock { color: var(--badge-red); }
-
-    /* Modals */
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(5px); }
-    .modal-box { background: var(--bg-color); width: 600px; max-width: 90%; border-radius: 8px; padding: 30px; position: relative; max-height: 80vh; overflow-y: auto; }
-    .modal-close { position: absolute; top: 15px; right: 20px; font-size: 26px; cursor: pointer; color: #555; transition: 0.2s; }
-    .modal-close:hover { color: var(--badge-red); }
-    
-    .detail-content { background: var(--bg-color); width: 950px; max-width: 95%; border-radius: 8px; overflow: hidden; display: flex; position: relative; box-shadow: 0 15px 50px rgba(0,0,0,0.2); }
-    .modal-img-section { width: 50%; background: #fff; padding: 25px; display: flex; flex-direction: column; gap: 15px; }
-    .modal-main-img { width: 100%; height: 400px; object-fit: cover; object-position: center top; border-radius: 4px; }
-    .modal-thumbs { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; }
-    .modal-thumbs img { width: 65px; height: 65px; object-fit: cover; object-position: center top; border-radius: 4px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
-    .modal-thumbs img.active { border-color: var(--heading-color); }
-    .modal-info-section { width: 50%; padding: 40px; display: flex; flex-direction: column; justify-content: space-between; max-height: 600px; overflow-y: auto; }
-    .modal-info-section h2 { font-size: 28px; margin-bottom: 15px; color: var(--heading-color); line-height: 1.2; }
-    .size-btns { display: flex; gap: 10px; margin-top: 10px; }
-    .size-btn { padding: 10px 16px; border: 1px solid var(--border-light); background: #fff; cursor: pointer; border-radius: 4px; font-weight: 600; transition: 0.2s; }
-    .size-btn.selected { background: var(--primary-btn); color: #fff; border-color: var(--primary-btn); }
-    .order-now-btn { width: 100%; background: var(--primary-btn); color: #fff; padding: 16px; border: none; border-radius: 4px; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.3s; margin-top: 25px; text-transform: uppercase; letter-spacing: 1px; }
-    .order-now-btn:hover { background: #333; }
-
-    /* Footer */
-    footer { background: var(--footer-bg); padding: 70px 20px 30px; margin-top: 80px; }
-    .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 50px; margin-bottom: 50px; }
-    .footer-col h4 { font-size: 16px; margin-bottom: 25px; color: var(--text-main); font-family: 'Inter', sans-serif; font-weight: 700; letter-spacing: 1px; }
-    .footer-col ul { list-style: none; }
-    .footer-col ul li { margin-bottom: 12px; }
-    .footer-col ul li a, .footer-col p { color: #555; text-decoration: none; font-size: 14px; line-height: 1.8; transition: 0.2s; }
-    .footer-col ul li a:hover { color: var(--heading-color); }
-    .footer-bottom { text-align: center; font-size: 13px; color: #777; border-top: 1px solid var(--border-light); padding-top: 25px; }
-    .loading { text-align: center; grid-column: 1 / -1; padding: 50px; font-size: 18px; color: #666; }
-  </style>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-  <!-- Navbar -->
-  <header>
-    <div class="navbar">
-      <a href="#" class="logo">🛍️ Underworld</a>
-      
-      <!-- Middle Search Box -->
-      <div class="header-search">
-        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
-        <input type="text" id="liveSearchInput" placeholder="Search products..." oninput="handleHeaderSearch(this.value)">
-        <div class="search-dropdown" id="searchDropdown"></div>
-      </div>
+<!-- =========================================
+     PAGE LOADER
+========================================= -->
 
-      <!-- Right Icons -->
-      <div class="nav-icons">
-        <button class="lang-btn" id="langToggle">BN</button>
-        <span onclick="alert('User login coming soon!')" title="Account">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-        </span>
-        <span onclick="openWishlistModal()" title="Wishlist">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-        </span>
-        <span onclick="alert('Cart will be added later!')" title="Cart">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-        </span>
-      </div>
+<div id="pageLoader" class="page-loader">
+    <div class="loader-logo">
+        <span>◈</span>
+        UNDERWORLD
     </div>
-  </header>
+    <div class="loader-line"></div>
+</div>
 
-  <!-- Hero Slider -->
-  <div class="hero-slider">
-    <!-- Women's Banner -->
-    <div class="slide active" style="background-image: url('https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1600&q=80');">
-      <div class="slide-content">
-        <h1>THE SIGNATURE OF STYLE!</h1>
-        <p>WEAR YOUR IDENTITY</p>
-        <button class="shop-btn" onclick="filterItems('women')">SHOP NOW</button>
-      </div>
-    </div>
-    <!-- Men's Banner -->
-    <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?auto=format&fit=crop&w=1600&q=80');">
-      <div class="slide-content">
-        <h1>ELEVATE YOUR AURA</h1>
-        <p>WEAR YOUR IDENTITY</p>
-        <button class="shop-btn" onclick="filterItems('men')">SHOP NOW</button>
-      </div>
-    </div>
-    <!-- Sports Banner -->
-    <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1600&q=80');">
-      <div class="slide-content">
-        <h1>PERFORM WITHOUT LIMITS</h1>
-        <p>ACTIVE SPORTS GEAR</p>
-        <button class="shop-btn" onclick="filterItems('sports')">SHOP NOW</button>
-      </div>
-    </div>
-  </div>
 
-  <!-- Categories -->
-  <h2 class="section-title" id="cat-title-text">Categories</h2>
-  <div class="categories-container">
-    <div class="cat-card" onclick="filterItems('men')">
-      <img src="https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?q=80&w=400&auto=format&fit=crop" class="cat-img" alt="Men">
-      <h4 id="cat-men">Men</h4>
-    </div>
-    <div class="cat-card" onclick="filterItems('women')">
-      <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop" class="cat-img" alt="Women">
-      <h4 id="cat-women">Women</h4>
-    </div>
-    <div class="cat-card" onclick="filterItems('sports')">
-      <img src="https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?q=80&w=400&auto=format&fit=crop" class="cat-img" alt="Sports">
-      <h4 id="cat-sports">Sports</h4>
-    </div>
-  </div>
+<!-- =========================================
+     HEADER
+========================================= -->
 
-  <!-- Popular Products -->
-  <div class="container">
-    <h2 class="section-title" id="pop-title-text">Popular Products</h2>
-    <div id="productGrid" class="product-grid">
-      <div class="loading">Loading products...</div>
-    </div>
-  </div>
+<header class="header" id="header">
 
-  <!-- Wishlist Modal -->
-  <div class="modal-overlay" id="wishlistModal">
-    <div class="modal-box">
-      <span class="modal-close" onclick="closeWishlistModal()">&times;</span>
-      <h3 style="font-family:'Playfair Display',serif; color:var(--heading-color);">My Favorites</h3>
-      <div id="wishlistResults" style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px; max-height: 350px; overflow-y: auto;"></div>
-    </div>
-  </div>
+    <div class="header-inner">
 
-  <!-- Product Detail Modal -->
-  <div class="modal-overlay" id="productModal">
-    <div class="detail-content">
-      <span class="modal-close" onclick="closeModal()">&times;</span>
-      <div class="modal-img-section">
-        <img id="modalMainImg" class="modal-main-img" src="" alt="Product">
-        <div class="modal-thumbs" id="modalThumbs"></div>
-      </div>
-      <div class="modal-info-section">
-        <div>
-          <h2 id="modalTitle">Product Name</h2>
-          <div class="price-box">
-            <span class="current-price" id="modalPrice">৳ 0</span>
-            <span class="old-price" id="modalOldPrice" style="display:none;">৳ 0</span>
-          </div>
-          <p id="modalStock" style="font-weight: 600; font-size: 13px; margin-bottom: 12px;"></p>
-          <div class="size-select-box" id="sizeBox" style="display:none;">
-            <label style="font-size: 14px; font-weight: 600; color:var(--text-main);">Select Size:</label>
-            <div class="size-btns" id="sizeBtnsList"></div>
-          </div>
-          <p id="modalDesc" style="color: #555; font-size: 14px; margin-top: 20px; line-height: 1.6;"></p>
+        <!-- LOGO -->
+
+        <a href="index.html" class="brand">
+
+            <span class="brand-icon">
+                <i class="fa-solid fa-bag-shopping"></i>
+            </span>
+
+            <span>UNDERWORLD</span>
+
+        </a>
+
+
+        <!-- DESKTOP NAV -->
+
+        <nav class="desktop-nav">
+
+            <a href="#home">
+                <span data-en="Home" data-bn="হোম">Home</span>
+            </a>
+
+            <a href="#categories">
+                <span data-en="Categories" data-bn="ক্যাটাগরি">
+                    Categories
+                </span>
+            </a>
+
+            <a href="#popular">
+                <span data-en="Popular Products" data-bn="জনপ্রিয় পণ্য">
+                    Popular Products
+                </span>
+            </a>
+
+        </nav>
+
+
+        <!-- HEADER ACTIONS -->
+
+        <div class="header-actions">
+
+            <!-- SEARCH -->
+
+            <button class="icon-btn" id="searchBtn" aria-label="Search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+
+
+            <!-- ACCOUNT -->
+
+            <button class="icon-btn" id="accountBtn" aria-label="Account">
+                <i class="fa-regular fa-user"></i>
+            </button>
+
+
+            <!-- WISHLIST -->
+
+            <button class="icon-btn wishlist-header-btn"
+                    id="wishlistBtn"
+                    aria-label="Wishlist">
+
+                <i class="fa-regular fa-heart"></i>
+
+                <span class="count-badge" id="wishlistCount">
+                    0
+                </span>
+
+            </button>
+
+
+            <!-- CART -->
+
+            <button class="icon-btn"
+                    id="cartBtn"
+                    aria-label="Shopping Cart">
+
+                <i class="fa-solid fa-bag-shopping"></i>
+
+                <span class="count-badge" id="cartCount">
+                    0
+                </span>
+
+            </button>
+
+
+            <!-- LANGUAGE -->
+
+            <button class="language-btn" id="languageBtn">
+                <span id="languageText">বাংলা</span>
+            </button>
+
+
+            <!-- MOBILE MENU -->
+
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
         </div>
-        <button class="order-now-btn" onclick="orderNow()">ORDER VIA WHATSAPP</button>
-      </div>
-    </div>
-  </div>
 
-  <!-- Footer -->
-  <footer>
-    <div class="footer-container">
-      <div class="footer-col">
-        <h4 id="footer-social-title">THE VOID LABEL</h4>
-        <p id="footer-desc">Timeless style, modern vibe. Curated fashion for every you.</p>
-      </div>
-      <div class="footer-col">
-        <h4 id="footer-help-title">HELP</h4>
-        <ul>
-          <li><a href="#">Contact Us</a></li>
-          <li><a href="#">Shipping & Delivery</a></li>
-          <li><a href="#">Returns & Exchanges</a></li>
-          <li><a href="#">FAQ</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4 id="footer-about-title">ABOUT</h4>
-        <ul>
-          <li><a href="#">Our Story</a></li>
-          <li><a href="#">Careers</a></li>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Blog</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4 id="footer-contact-title">CONTACT US</h4>
-        <p>📞 Call: 01632457606</p>
-        <p>💬 WhatsApp: 01606598948</p>
-        <p>✉️ Email: ibrahim71kholil@gmail.com</p>
-        <p>📍 Manikchari, Bangladesh</p>
-      </div>
     </div>
+
+</header>
+
+
+<!-- =========================================
+     MOBILE MENU
+========================================= -->
+
+<div class="mobile-menu" id="mobileMenu">
+
+    <button class="mobile-close" id="mobileClose">
+        <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <a href="#home">Home</a>
+
+    <a href="#categories">Categories</a>
+
+    <a href="#popular">Popular Products</a>
+
+    <a href="#footer">Contact</a>
+
+</div>
+
+
+<!-- =========================================
+     SEARCH PANEL
+========================================= -->
+
+<div class="search-panel" id="searchPanel">
+
+    <div class="search-panel-inner">
+
+        <button id="closeSearch" class="close-search">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <span class="search-label">
+            SEARCH UNDERWORLD
+        </span>
+
+        <div class="big-search">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search products..."
+                autocomplete="off">
+
+        </div>
+
+        <div id="searchResults" class="search-results"></div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     HERO
+========================================= -->
+
+<main id="home">
+
+<section class="hero">
+
+    <!-- SLIDE 1 -->
+
+    <div class="hero-slide active">
+
+        <img
+            src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=2000&q=90"
+            alt="Women Fashion">
+
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+
+            <span class="hero-small">
+                UNDERWORLD WOMEN
+            </span>
+
+            <h1>
+                WEAR YOUR<br>
+                IDENTITY
+            </h1>
+
+            <p>
+                <span data-en="Own your style. Define your world."
+                      data-bn="নিজের স্টাইলকে নিজের পরিচয় বানান।">
+                    Own your style. Define your world.
+                </span>
+            </p>
+
+            <button class="primary-btn" onclick="shopCategory('Women')">
+                SHOP NOW
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- SLIDE 2 -->
+
+    <div class="hero-slide">
+
+        <img
+            src="https://images.unsplash.com/photo-1617137968427-85924c800a22?auto=format&fit=crop&w=2000&q=90"
+            alt="Men Fashion">
+
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+
+            <span class="hero-small">
+                UNDERWORLD MEN
+            </span>
+
+            <h1>
+                WEAR YOUR<br>
+                IDENTITY
+            </h1>
+
+            <p>
+                <span data-en="Confidence starts with what you wear."
+                      data-bn="আপনার পোশাকেই শুরু হোক আত্মবিশ্বাস।">
+                    Confidence starts with what you wear.
+                </span>
+            </p>
+
+            <button class="primary-btn" onclick="shopCategory('Men')">
+                SHOP NOW
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- SLIDE 3 -->
+
+    <div class="hero-slide">
+
+        <img
+            src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=2000&q=90"
+            alt="Sports">
+
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+
+            <span class="hero-small">
+                UNDERWORLD SPORTS
+            </span>
+
+            <h1>
+                BUILT TO<br>
+                PERFORM
+            </h1>
+
+            <p>
+                <span data-en="Move stronger. Go further."
+                      data-bn="আরও শক্তিশালীভাবে এগিয়ে যান।">
+                    Move stronger. Go further.
+                </span>
+            </p>
+
+            <button class="primary-btn" onclick="shopCategory('Sports')">
+                SHOP NOW
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- SLIDER CONTROLS -->
+
+    <div class="hero-controls">
+
+        <button class="hero-arrow" id="heroPrev">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+
+        <div class="hero-dots">
+
+            <button class="hero-dot active" data-slide="0"></button>
+
+            <button class="hero-dot" data-slide="1"></button>
+
+            <button class="hero-dot" data-slide="2"></button>
+
+        </div>
+
+        <button class="hero-arrow" id="heroNext">
+            <i class="fa-solid fa-arrow-right"></i>
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================
+     TRUST FEATURES
+========================================= -->
+
+<section class="features-section">
+
+    <div class="features-grid">
+
+        <div class="feature-item">
+
+            <div class="feature-icon">
+                <i class="fa-solid fa-truck-fast"></i>
+            </div>
+
+            <div>
+                <h4 data-en="Fast Delivery" data-bn="দ্রুত ডেলিভারি">
+                    Fast Delivery
+                </h4>
+
+                <p data-en="Across Bangladesh"
+                   data-bn="সারা বাংলাদেশে">
+                    Across Bangladesh
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="feature-item">
+
+            <div class="feature-icon">
+                <i class="fa-solid fa-rotate-left"></i>
+            </div>
+
+            <div>
+                <h4 data-en="Easy Returns" data-bn="সহজ রিটার্ন">
+                    Easy Returns
+                </h4>
+
+                <p data-en="Simple return policy"
+                   data-bn="সহজ রিটার্ন সুবিধা">
+                    Simple return policy
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="feature-item">
+
+            <div class="feature-icon">
+                <i class="fa-regular fa-comments"></i>
+            </div>
+
+            <div>
+                <h4 data-en="Customer Support" data-bn="কাস্টমার সাপোর্ট">
+                    Customer Support
+                </h4>
+
+                <p data-en="We're here to help"
+                   data-bn="আমরা সাহায্যের জন্য আছি">
+                    We're here to help
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="feature-item">
+
+            <div class="feature-icon">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+
+            <div>
+                <h4 data-en="Secure Shopping" data-bn="নিরাপদ কেনাকাটা">
+                    Secure Shopping
+                </h4>
+
+                <p data-en="Safe & secure checkout"
+                   data-bn="নিরাপদ চেকআউট">
+                    Safe & secure checkout
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================
+     CATEGORIES
+========================================= -->
+
+<section class="categories-section section" id="categories">
+
+    <div class="section-heading">
+
+        <span class="section-kicker">
+            EXPLORE
+        </span>
+
+        <h2 data-en="Categories" data-bn="ক্যাটাগরি">
+            Categories
+        </h2>
+
+        <p data-en="Find your style."
+           data-bn="আপনার পছন্দের স্টাইল খুঁজে নিন।">
+            Find your style.
+        </p>
+
+    </div>
+
+
+    <div class="category-grid">
+
+        <!-- WOMEN -->
+
+        <button class="category-card"
+                onclick="shopCategory('Women')">
+
+            <img
+                src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=900&q=85"
+                alt="Women">
+
+            <div class="category-overlay"></div>
+
+            <div class="category-content">
+
+                <span>01</span>
+
+                <h3>WOMEN</h3>
+
+                <p>
+                    EXPLORE COLLECTION
+                    <i class="fa-solid fa-arrow-right"></i>
+                </p>
+
+            </div>
+
+        </button>
+
+
+        <!-- MEN -->
+
+        <button class="category-card"
+                onclick="shopCategory('Men')">
+
+            <img
+                src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=900&q=85"
+                alt="Men">
+
+            <div class="category-overlay"></div>
+
+            <div class="category-content">
+
+                <span>02</span>
+
+                <h3>MEN</h3>
+
+                <p>
+                    EXPLORE COLLECTION
+                    <i class="fa-solid fa-arrow-right"></i>
+                </p>
+
+            </div>
+
+        </button>
+
+
+        <!-- SPORTS -->
+
+        <button class="category-card"
+                onclick="shopCategory('Sports')">
+
+            <img
+                src="https://images.unsplash.com/photo-1538805060514-97d9cc17730c?auto=format&fit=crop&w=900&q=85"
+                alt="Sports">
+
+            <div class="category-overlay"></div>
+
+            <div class="category-content">
+
+                <span>03</span>
+
+                <h3>SPORTS</h3>
+
+                <p>
+                    EXPLORE COLLECTION
+                    <i class="fa-solid fa-arrow-right"></i>
+                </p>
+
+            </div>
+
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================
+     POPULAR PRODUCTS
+========================================= -->
+
+<section class="products-section section" id="popular">
+
+    <div class="section-heading products-heading">
+
+        <div>
+
+            <span class="section-kicker">
+                UNDERWORLD COLLECTION
+            </span>
+
+            <h2 data-en="Popular Products"
+                data-bn="জনপ্রিয় পণ্য">
+                Popular Products
+            </h2>
+
+        </div>
+
+        <button class="text-btn" id="viewAllBtn">
+            VIEW ALL
+            <i class="fa-solid fa-arrow-right"></i>
+        </button>
+
+    </div>
+
+
+    <!-- FILTER -->
+
+    <div class="filter-row">
+
+        <button class="filter-btn active" data-category="All">
+            ALL
+        </button>
+
+        <button class="filter-btn" data-category="Women">
+            WOMEN
+        </button>
+
+        <button class="filter-btn" data-category="Men">
+            MEN
+        </button>
+
+        <button class="filter-btn" data-category="Sports">
+            SPORTS
+        </button>
+
+    </div>
+
+
+    <!-- PRODUCTS -->
+
+    <div id="productsGrid" class="products-grid">
+
+        <!-- Products inserted by JavaScript -->
+
+    </div>
+
+
+    <div id="emptyProducts" class="empty-products hidden">
+
+        <i class="fa-regular fa-face-frown"></i>
+
+        <h3>No products found</h3>
+
+        <p>Try another category or search.</p>
+
+    </div>
+
+
+    <div class="products-bottom">
+
+        <button class="outline-btn" id="loadMoreBtn">
+            VIEW ALL PRODUCTS
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================
+     BRAND STATEMENT
+========================================= -->
+
+<section class="statement-section">
+
+    <div class="statement-inner">
+
+        <span>
+            UNDERWORLD
+        </span>
+
+        <h2>
+            WEAR YOUR<br>
+            <em>IDENTITY.</em>
+        </h2>
+
+        <p>
+            Fashion isn't just what you wear.
+            It's how you define yourself.
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================
+     FOOTER
+========================================= -->
+
+<footer class="footer" id="footer">
+
+    <div class="footer-main">
+
+        <!-- SOCIAL MEDIA -->
+
+        <div class="footer-column footer-social">
+
+            <div class="footer-title">
+                <span class="footer-icon">
+                    <i class="fa-solid fa-share-nodes"></i>
+                </span>
+
+                SOCIAL MEDIA
+            </div>
+
+            <p>
+                Follow UNDERWORLD and stay connected with our latest drops.
+            </p>
+
+            <div class="social-icons">
+
+                <a href="#" aria-label="Facebook">
+                    <i class="fa-brands fa-facebook-f"></i>
+                </a>
+
+                <a href="#" aria-label="Instagram">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+
+                <a href="#" aria-label="TikTok">
+                    <i class="fa-brands fa-tiktok"></i>
+                </a>
+
+                <a href="#" aria-label="YouTube">
+                    <i class="fa-brands fa-youtube"></i>
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- HELP -->
+
+        <div class="footer-column">
+
+            <h4>HELP</h4>
+
+            <a href="#">
+                Shipping & Delivery
+            </a>
+
+            <a href="#">
+                Returns
+            </a>
+
+            <a href="#">
+                FAQ
+            </a>
+
+            <a href="#">
+                Customer Support
+            </a>
+
+        </div>
+
+
+        <!-- ABOUT -->
+
+        <div class="footer-column">
+
+            <h4>ABOUT</h4>
+
+            <a href="#">
+                Our Story
+            </a>
+
+            <a href="#">
+                About UNDERWORLD
+            </a>
+
+            <a href="#">
+                Our Collection
+            </a>
+
+        </div>
+
+
+        <!-- CONTACT -->
+
+        <div class="footer-column contact-column">
+
+            <h4>CONTACT</h4>
+
+            <a href="mailto:ibrahim71kholil@gmail.com">
+
+                <i class="fa-regular fa-envelope"></i>
+
+                ibrahim71kholil@gmail.com
+
+            </a>
+
+
+            <a href="tel:01632457606">
+
+                <i class="fa-solid fa-phone"></i>
+
+                01632457606
+
+            </a>
+
+
+            <div class="contact-note">
+
+                More contact options coming soon.
+
+            </div>
+
+        </div>
+
+    </div>
+
+
     <div class="footer-bottom">
-      &copy; 2026 Underworld. All Rights Reserved.
+
+        <p>
+            © <span id="currentYear"></span>
+            UNDERWORLD. All Rights Reserved.
+        </p>
+
+        <p>
+            WEAR YOUR IDENTITY.
+        </p>
+
     </div>
-  </footer>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+</footer>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAYuV3giwq0k0P-LJi-o5C5wnmbTHxwfYw",
-      authDomain: "underworld-f7aae.firebaseapp.com",
-      projectId: "underworld-f7aae",
-      storageBucket: "underworld-f7aae.firebasestorage.app",
-      messagingSenderId: "1054711880818",
-      appId: "1:1054711880818:web:73a97b6fc1413e3b4ab6eb"
-    };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+<!-- =========================================
+     CART DRAWER
+========================================= -->
 
-    let products = [];
-    let wishlist = JSON.parse(localStorage.getItem('underworld_wishlist')) || [];
-    let currentSelectedProduct = null;
-    let selectedSize = "";
-    let currentLang = 'en';
+<div class="drawer-overlay" id="drawerOverlay"></div>
 
-    const translations = {
-      en: { catTitle: "Categories", popTitle: "Popular Products", men: "Men", women: "Women", sports: "Sports", loading: "Loading products...", noProd: "No products found." },
-      bn: { catTitle: "ক্যাটাগরি", popTitle: "জনপ্রিয় প্রোডাক্ট", men: "পুরুষ", women: "মহিলা", sports: "স্পোর্টস", loading: "প্রোডাক্ট লোড হচ্ছে...", noProd: "কোনো প্রোডাক্ট পাওয়া যায়নি।" }
-    };
+<aside class="side-drawer cart-drawer" id="cartDrawer">
 
-    let currentSlide = 0;
-    const slides = document.querySelectorAll('.slide');
-    setInterval(() => {
-      slides[currentSlide].classList.remove('active');
-      currentSlide = (currentSlide + 1) % slides.length;
-      slides[currentSlide].classList.add('active');
-    }, 4500);
+    <div class="drawer-header">
 
-    document.getElementById('langToggle').addEventListener('click', () => {
-      currentLang = currentLang === 'en' ? 'bn' : 'en';
-      document.getElementById('langToggle').innerText = currentLang === 'en' ? 'BN' : 'EN';
-      updateTexts();
-      render('all');
-    });
+        <h3>
+            YOUR BAG
+        </h3>
 
-    function updateTexts() {
-      const t = translations[currentLang];
-      document.getElementById('cat-title-text').innerText = t.catTitle;
-      document.getElementById('pop-title-text').innerText = t.popTitle;
-      document.getElementById('cat-men').innerText = t.men;
-      document.getElementById('cat-women').innerText = t.women;
-      document.getElementById('cat-sports').innerText = t.sports;
-    }
+        <button class="drawer-close" id="closeCart">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
 
-    async function fetchProducts() {
-      const grid = document.getElementById("productGrid");
-      try {
-        const querySnapshot = await getDocs(collection(db, "products"));
-        products = [];
-        querySnapshot.forEach(doc => products.push({ id: doc.id, ...doc.data() }));
-        render('all');
-      } catch (err) {
-        grid.innerHTML = `<div class="loading">Error: ${err.message}</div>`;
-      }
-    }
+    </div>
 
-    window.filterItems = (cat) => {
-      render(cat);
-      window.scrollTo({ top: 650, behavior: 'smooth' });
-    };
 
-    function render(category) {
-      const grid = document.getElementById("productGrid");
-      grid.innerHTML = "";
-      const filtered = category === 'all' ? products : products.filter(p => p.category === category);
+    <div id="cartItems" class="cart-items">
 
-      if (filtered.length === 0) {
-        grid.innerHTML = `<div class="loading">${translations[currentLang].noProd}</div>`;
-        return;
-      }
+        <!-- Cart items -->
 
-      filtered.forEach(p => {
-        let imgs = p.imageUrls ? p.imageUrls.split(',').map(s => s.trim()) : [p.imageUrl || ''];
-        let isFav = wishlist.some(item => item.name === p.name);
-        let discountHtml = p.oldPrice && p.oldPrice > p.price ? `<span class="old-price">৳${p.oldPrice}</span>` : '';
-        let stockHtml = p.stock === 'out' ? `<div class="stock-tag out-stock">Stock Out</div>` : `<div class="stock-tag">In Stock</div>`;
+    </div>
 
-        grid.innerHTML += `
-          <div class="product-card" onclick='openModal(${JSON.stringify(p)})'>
-            <div class="product-img-box">
-              <img src="${imgs[0]}" alt="${p.name}">
-              ${p.oldPrice && p.oldPrice > p.price ? '<span class="badge">Sale</span>' : ''}
-              <div class="card-heart-icon ${isFav ? 'active' : ''}" onclick="event.stopPropagation(); toggleWishlist('${p.name}')">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                </svg>
-              </div>
-            </div>
-            <div class="product-details">
-              <div>
-                <div class="product-title">${p.name}</div>
-                <div class="price-box">
-                  <span class="current-price">৳ ${p.price}</span>
-                  ${discountHtml}
+
+    <div class="cart-empty" id="cartEmpty">
+
+        <i class="fa-solid fa-bag-shopping"></i>
+
+        <h3>
+            Your bag is empty
+        </h3>
+
+        <p>
+            Add something you love.
+        </p>
+
+    </div>
+
+
+    <div class="cart-footer">
+
+        <div class="cart-total">
+
+            <span>
+                TOTAL
+            </span>
+
+            <strong id="cartTotal">
+                ৳0
+            </strong>
+
+        </div>
+
+        <button class="checkout-btn" id="checkoutBtn">
+
+            CHECKOUT
+
+            <i class="fa-solid fa-arrow-right"></i>
+
+        </button>
+
+    </div>
+
+</aside>
+
+
+<!-- =========================================
+     WISHLIST DRAWER
+========================================= -->
+
+<aside class="side-drawer wishlist-drawer" id="wishlistDrawer">
+
+    <div class="drawer-header">
+
+        <h3>
+            WISHLIST
+        </h3>
+
+        <button class="drawer-close" id="closeWishlist">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+    </div>
+
+    <div id="wishlistItems" class="wishlist-items">
+
+    </div>
+
+</aside>
+
+
+<!-- =========================================
+     ACCOUNT MODAL
+========================================= -->
+
+<div class="modal-overlay" id="accountModal">
+
+    <div class="account-modal modal-box">
+
+        <button class="modal-close" id="closeAccount">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <div class="modal-icon">
+            <i class="fa-regular fa-user"></i>
+        </div>
+
+        <h2>
+            UNDERWORLD
+        </h2>
+
+        <p>
+            Account feature is ready for Firebase Authentication.
+        </p>
+
+        <button class="primary-btn full-btn" id="continueShopping">
+            CONTINUE SHOPPING
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     CHECKOUT MODAL
+========================================= -->
+
+<div class="modal-overlay" id="checkoutModal">
+
+    <div class="checkout-modal modal-box">
+
+        <button class="modal-close" id="closeCheckout">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <span class="section-kicker">
+            UNDERWORLD CHECKOUT
+        </span>
+
+        <h2>
+            COMPLETE YOUR ORDER
+        </h2>
+
+        <form id="checkoutForm">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>
+                        Full Name *
+                    </label>
+
+                    <input
+                        type="text"
+                        id="customerName"
+                        required
+                        placeholder="Your full name">
+
                 </div>
-              </div>
-              ${stockHtml}
+
+
+                <div class="form-group">
+
+                    <label>
+                        Phone *
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="customerPhone"
+                        required
+                        placeholder="01XXXXXXXXX">
+
+                </div>
+
+
+                <div class="form-group full">
+
+                    <label>
+                        Address *
+                    </label>
+
+                    <textarea
+                        id="customerAddress"
+                        required
+                        placeholder="Complete delivery address"></textarea>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        District *
+                    </label>
+
+                    <input
+                        type="text"
+                        id="customerDistrict"
+                        required
+                        placeholder="District">
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Payment Method
+                    </label>
+
+                    <select id="paymentMethod">
+
+                        <option value="Cash on Delivery">
+                            Cash on Delivery
+                        </option>
+
+                    </select>
+
+                </div>
+
             </div>
-          </div>
-        `;
-      });
-    }
 
-    window.handleHeaderSearch = (query) => {
-      let dropdown = document.getElementById('searchDropdown');
-      dropdown.innerHTML = "";
-      if (!query.trim()) { dropdown.style.display = "none"; return; }
-      
-      let matched = products.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
-      if (matched.length === 0) {
-        dropdown.innerHTML = "<div style='padding:15px; color:#777; text-align:center;'>No products found.</div>";
-      } else {
-        matched.forEach(p => {
-          let imgs = p.imageUrls ? p.imageUrls.split(',').map(s => s.trim()) : [''];
-          dropdown.innerHTML += `
-            <div style="display:flex; align-items:center; gap:12px; padding:12px 15px; border-bottom:1px solid #eee; cursor:pointer;" onclick="openModal(${JSON.stringify(p)}); document.getElementById('searchDropdown').style.display='none'; document.getElementById('liveSearchInput').value='';">
-              <img src="${imgs[0]}" style="width:40px; height:40px; object-fit:cover; border-radius:4px;">
-              <div>
-                <strong style="font-size:14px; color:var(--text-main);">${p.name}</strong><br>
-                <span style="font-size:13px; color:var(--heading-color); font-weight:bold;">৳${p.price}</span>
-              </div>
+
+            <div class="checkout-summary">
+
+                <div>
+
+                    <span>
+                        Items
+                    </span>
+
+                    <strong id="checkoutItemsCount">
+                        0
+                    </strong>
+
+                </div>
+
+                <div>
+
+                    <span>
+                        Total
+                    </span>
+
+                    <strong id="checkoutTotal">
+                        ৳0
+                    </strong>
+
+                </div>
+
             </div>
-          `;
-        });
-      }
-      dropdown.style.display = "block";
-    };
 
-    document.addEventListener('click', function(event) {
-      const searchBox = document.querySelector('.header-search');
-      if (!searchBox.contains(event.target)) { document.getElementById('searchDropdown').style.display = 'none'; }
-    });
 
-    window.toggleWishlist = (productName) => {
-      let prod = products.find(p => p.name === productName);
-      let idx = wishlist.findIndex(item => item.name === productName);
-      if (idx > -1) { wishlist.splice(idx, 1); } else { wishlist.push(prod); }
-      localStorage.setItem('underworld_wishlist', JSON.stringify(wishlist));
-      render('all'); 
-    };
+            <button
+                type="submit"
+                class="primary-btn full-btn">
 
-    window.openWishlistModal = () => {
-      let resultsDiv = document.getElementById('wishlistResults');
-      resultsDiv.innerHTML = "";
-      if (wishlist.length === 0) {
-        resultsDiv.innerHTML = "<p style='color:#777;'>Your wishlist is empty.</p>";
-      } else {
-        wishlist.forEach(p => {
-          let imgs = p.imageUrls ? p.imageUrls.split(',').map(s => s.trim()) : [''];
-          resultsDiv.innerHTML += `
-            <div style="display:flex; align-items:center; gap:15px; border-bottom:1px solid #E8E2D6; padding-bottom:12px; cursor:pointer;" onclick="openModal(${JSON.stringify(p)}); closeWishlistModal();">
-              <img src="${imgs[0]}" style="width:60px; height:60px; object-fit:cover; border-radius:4px;">
-              <div style="flex-grow:1;">
-                <strong style="color:var(--text-main);">${p.name}</strong><br><span style="color:var(--heading-color); font-weight:bold;">৳${p.price}</span>
-              </div>
-              <button onclick="event.stopPropagation(); toggleWishlist('${p.name}'); closeWishlistModal(); openWishlistModal();" style="background:transparent; border:none; color:var(--badge-red); cursor:pointer; font-size:18px;">❌</button>
-            </div>
-          `;
-        });
-      }
-      document.getElementById('wishlistModal').style.display = "flex";
-    };
+                PLACE ORDER
 
-    window.closeWishlistModal = () => { document.getElementById('wishlistModal').style.display = "none"; };
+                <i class="fa-solid fa-check"></i>
 
-    window.openModal = (product) => {
-      currentSelectedProduct = product;
-      document.getElementById("modalTitle").innerText = product.name;
-      document.getElementById("modalPrice").innerText = "৳ " + product.price;
-      
-      let oldPriceEl = document.getElementById("modalOldPrice");
-      if (product.oldPrice && product.oldPrice > product.price) {
-        oldPriceEl.innerText = "৳ " + product.oldPrice; oldPriceEl.style.display = "inline";
-      } else { oldPriceEl.style.display = "none"; }
+            </button>
 
-      let stockEl = document.getElementById("modalStock");
-      if (product.stock === 'out') { stockEl.innerText = "Status: Stock Out"; stockEl.className = "out-stock"; } 
-      else { stockEl.innerText = "Status: In Stock"; stockEl.style.color = "#27ae60"; }
+        </form>
 
-      document.getElementById("modalDesc").innerText = product.description || "No description provided.";
+    </div>
 
-      let imgs = product.imageUrls ? product.imageUrls.split(',').map(s => s.trim()) : [''];
-      document.getElementById("modalMainImg").src = imgs[0];
-      
-      let thumbsContainer = document.getElementById("modalThumbs");
-      thumbsContainer.innerHTML = "";
-      imgs.forEach((img, index) => {
-        thumbsContainer.innerHTML += `<img src="${img}" class="${index === 0 ? 'active' : ''}" onclick="changeMainImg(this, '${img}')">`;
-      });
+</div>
 
-      let sizeBox = document.getElementById("sizeBox");
-      let sizeBtnsList = document.getElementById("sizeBtnsList");
-      sizeBtnsList.innerHTML = "";
-      if (product.sizes) {
-        sizeBox.style.display = "block";
-        let sizes = product.sizes.split(',').map(s => s.trim());
-        selectedSize = sizes[0];
-        sizes.forEach((s, idx) => {
-          sizeBtnsList.innerHTML += `<button class="size-btn ${idx === 0 ? 'selected' : ''}" onclick="selectSize(this, '${s}')">${s}</button>`;
-        });
-      } else {
-        sizeBox.style.display = "none";
-        selectedSize = "Standard";
-      }
-      document.getElementById("productModal").style.display = "flex";
-    };
 
-    window.changeMainImg = (el, src) => {
-      document.getElementById("modalMainImg").src = src;
-      document.querySelectorAll('.modal-thumbs img').forEach(i => i.classList.remove('active'));
-      el.classList.add('active');
-    };
-    window.selectSize = (el, size) => {
-      selectedSize = size;
-      document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
-      el.classList.add('selected');
-    };
-    window.closeModal = () => { document.getElementById("productModal").style.display = "none"; };
+<!-- =========================================
+     TOAST
+========================================= -->
 
-    window.orderNow = () => {
-      if (currentSelectedProduct.stock === 'out') { alert("Sorry, this product is currently out of stock."); return; }
-      let msg = `Hello, I want to order this product:\n*Name:* ${currentSelectedProduct.name}\n*Price:* ৳${currentSelectedProduct.price}\n*Size:* ${selectedSize}`;
-      let url = `https://wa.me/8801606598948?text=${encodeURIComponent(msg)}`;
-      window.open(url, '_blank');
-    };
+<div class="toast" id="toast">
 
-    fetchProducts();
-  </script>
+    <i class="fa-solid fa-check"></i>
+
+    <span id="toastMessage">
+        Added successfully
+    </span>
+
+</div>
+
+
+<!-- =========================================
+     JAVASCRIPT
+========================================= -->
+
+<script type="module" src="script.js"></script>
+
 </body>
 </html>
