@@ -1,1 +1,1688 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Product — UNDERWORLD</title>
+
+    <link rel="preconnect"
+        href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+
+
+    <style>
+
+        .product-page {
+
+            max-width: 1280px;
+
+            margin: auto;
+
+            padding:
+                150px 30px 100px;
+
+        }
+
+
+        .product-breadcrumb {
+
+            font-size: 10px;
+
+            letter-spacing: 1px;
+
+            opacity: .5;
+
+            margin-bottom: 35px;
+
+        }
+
+
+        .product-detail-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                1.15fr .85fr;
+
+            gap: 70px;
+
+        }
+
+
+        .product-gallery {
+
+            display: grid;
+
+            grid-template-columns: 90px 1fr;
+
+            gap: 15px;
+
+        }
+
+
+        .gallery-thumbs {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 10px;
+
+        }
+
+
+        .gallery-thumb {
+
+            width: 85px;
+
+            height: 105px;
+
+            overflow: hidden;
+
+            border:
+                1px solid var(--border);
+
+            cursor: pointer;
+
+            background: var(--cream-2);
+
+        }
+
+
+        .gallery-thumb.active {
+
+            border-color:
+                var(--black);
+
+        }
+
+
+        .gallery-thumb img {
+
+            width: 100%;
+
+            height: 100%;
+
+            object-fit: cover;
+
+        }
+
+
+        .main-product-image {
+
+            position: relative;
+
+            aspect-ratio: .82;
+
+            overflow: hidden;
+
+            background: var(--cream-2);
+
+        }
+
+
+        .main-product-image img {
+
+            width: 100%;
+
+            height: 100%;
+
+            object-fit: cover;
+
+            transition:
+                transform .7s ease;
+
+        }
+
+
+        .main-product-image:hover img {
+
+            transform:
+                scale(1.035);
+
+        }
+
+
+        .product-detail-info {
+
+            padding-top: 10px;
+
+        }
+
+
+        .detail-category {
+
+            font-size: 10px;
+
+            letter-spacing: 2px;
+
+            color: var(--brown);
+
+            font-weight: 700;
+
+        }
+
+
+        .detail-title {
+
+            font-family:
+                var(--font-title);
+
+            font-size:
+                clamp(40px, 5vw, 65px);
+
+            line-height: 1;
+
+            margin:
+                15px 0 18px;
+
+        }
+
+
+        .detail-price {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .detail-current-price {
+
+            font-size: 21px;
+
+            font-weight: 700;
+
+        }
+
+
+        .detail-old-price {
+
+            font-size: 15px;
+
+            opacity: .45;
+
+            text-decoration:
+                line-through;
+
+        }
+
+
+        .detail-discount {
+
+            background:
+                var(--black);
+
+            color: white;
+
+            font-size: 9px;
+
+            padding: 6px 9px;
+
+        }
+
+
+        .detail-stock {
+
+            display: inline-block;
+
+            font-size: 10px;
+
+            padding: 7px 11px;
+
+            background:
+                rgba(60,120,75,.1);
+
+            color:
+                #39714d;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        .detail-description {
+
+            font-size: 13px;
+
+            line-height: 1.9;
+
+            opacity: .65;
+
+            max-width: 520px;
+
+            margin-bottom: 30px;
+
+        }
+
+
+        .option-group {
+
+            margin-bottom: 25px;
+
+        }
+
+
+        .option-title {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            letter-spacing: 1px;
+
+            margin-bottom: 12px;
+
+        }
+
+
+        .option-list {
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 8px;
+
+        }
+
+
+        .option-btn {
+
+            min-width: 43px;
+
+            height: 40px;
+
+            padding:
+                0 14px;
+
+            border:
+                1px solid var(--border);
+
+            background:
+                transparent;
+
+            font-size: 10px;
+
+            transition:
+                var(--transition);
+
+        }
+
+
+        .option-btn:hover,
+
+        .option-btn.selected {
+
+            background:
+                var(--black);
+
+            color: white;
+
+            border-color:
+                var(--black);
+
+        }
+
+
+        .color-btn {
+
+            border-radius: 50%;
+
+            width: 32px;
+
+            min-width: 32px;
+
+            padding: 0;
+
+        }
+
+
+        .detail-actions {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 52px;
+
+            gap: 10px;
+
+            margin-top: 30px;
+
+        }
+
+
+        .add-cart-btn {
+
+            background:
+                var(--black);
+
+            color: white;
+
+            padding: 18px;
+
+            font-size: 10px;
+
+            letter-spacing: 1.5px;
+
+            font-weight: 700;
+
+            transition:
+                var(--transition);
+
+        }
+
+
+        .add-cart-btn:hover {
+
+            background:
+                var(--brown);
+
+            transform:
+                translateY(-3px);
+
+        }
+
+
+        .detail-wishlist {
+
+            background:
+                transparent;
+
+            border:
+                1px solid var(--border);
+
+            transition:
+                var(--transition);
+
+        }
+
+
+        .detail-wishlist:hover {
+
+            background:
+                var(--black);
+
+            color: white;
+
+        }
+
+
+        .detail-meta {
+
+            border-top:
+                1px solid var(--border);
+
+            margin-top: 35px;
+
+            padding-top: 25px;
+
+        }
+
+
+        .meta-row {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            font-size: 10px;
+
+            padding:
+                8px 0;
+
+        }
+
+
+        .meta-row span:first-child {
+
+            opacity: .5;
+
+        }
+
+
+        .related-section {
+
+            max-width: 1280px;
+
+            margin: auto;
+
+            padding:
+                0 30px 100px;
+
+        }
+
+
+        .product-loading {
+
+            min-height: 400px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-family:
+                var(--font-title);
+
+            font-size: 30px;
+
+        }
+
+
+        @media (max-width: 850px) {
+
+            .product-detail-grid {
+
+                grid-template-columns: 1fr;
+
+                gap: 40px;
+
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .product-page {
+
+                padding:
+                    115px 15px 70px;
+
+            }
+
+            .product-gallery {
+
+                grid-template-columns: 65px 1fr;
+
+            }
+
+            .gallery-thumb {
+
+                width: 60px;
+
+                height: 75px;
+
+            }
+
+            .detail-title {
+
+                font-size: 43px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- HEADER -->
+
+<header class="header">
+
+    <div class="header-inner">
+
+        <a
+            href="index.html"
+            class="brand">
+
+            <span class="brand-icon">
+
+                <i class="fa-solid fa-bag-shopping"></i>
+
+            </span>
+
+            UNDERWORLD
+
+        </a>
+
+
+        <div class="header-actions">
+
+            <button
+                class="icon-btn"
+                onclick="history.back()">
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+            </button>
+
+
+            <a
+                href="index.html"
+                class="icon-btn">
+
+                <i class="fa-solid fa-house"></i>
+
+            </a>
+
+
+            <button
+                class="icon-btn"
+                id="productWishlistBtn">
+
+                <i class="fa-regular fa-heart"></i>
+
+            </button>
+
+
+            <a
+                href="index.html"
+                class="icon-btn">
+
+                <i class="fa-solid fa-bag-shopping"></i>
+
+            </a>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- PRODUCT -->
+
+<main class="product-page">
+
+    <div
+        class="product-breadcrumb"
+        id="breadcrumb">
+
+        UNDERWORLD / PRODUCT
+
+    </div>
+
+
+    <div
+        id="productContainer"
+        class="product-detail-grid">
+
+        <div class="product-loading">
+
+            LOADING...
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<!-- RELATED -->
+
+<section class="related-section">
+
+    <div class="section-heading">
+
+        <span class="section-kicker">
+            YOU MAY ALSO LIKE
+        </span>
+
+        <h2>
+            More From UNDERWORLD
+        </h2>
+
+    </div>
+
+    <div
+        id="relatedProducts"
+        class="products-grid">
+
+    </div>
+
+</section>
+
+
+<!-- TOAST -->
+
+<div
+    class="toast"
+    id="toast">
+
+    <i class="fa-solid fa-check"></i>
+
+    <span id="toastMessage">
+        Added
+    </span>
+
+</div>
+
+
+<script type="module">
+
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+import {
+    getFirestore,
+    collection,
+    getDocs,
+    doc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+
+/* =========================================
+   FIREBASE CONFIG
+========================================= */
+
+const firebaseConfig = {
+
+    apiKey: "AIzaSyAyU3Vgiwq0k0P-LJi-o5C5wnmbTHxwFYw",
+
+    authDomain:
+        "underworld-f7aae.firebaseapp.com",
+
+    projectId:
+        "underworld-f7aae",
+
+    storageBucket:
+        "underworld-f7aae.firebasestorage.app",
+
+    messagingSenderId:
+        "1054711880818",
+
+    appId:
+        "1:1054711880818:web:7a97b6fc1413e3b4a6eb"
+
+};
+
+
+const app =
+    initializeApp(
+        firebaseConfig
+    );
+
+const db =
+    getFirestore(app);
+
+
+/* =========================================
+   GET PRODUCT ID
+========================================= */
+
+const params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+const productId =
+    params.get("id");
+
+
+/* =========================================
+   DEMO DATA
+========================================= */
+
+const demoProducts = [
+
+    {
+        id: "demo-women-1",
+        name: "Elegant Minimal Dress",
+        banglaName: "এলিগ্যান্ট মিনিমাল ড্রেস",
+        category: "Women",
+        price: 1890,
+        discountPrice: 1490,
+        stock: 12,
+        sizes: ["S","M","L","XL"],
+        colors: ["Black","Beige"],
+        images: [
+            "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=1000&q=90",
+            "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?auto=format&fit=crop&w=1000&q=90"
+        ],
+        description:
+            "A premium everyday dress designed for a confident modern look."
+    },
+
+    {
+        id: "demo-men-1",
+        name: "Premium Oversized Shirt",
+        banglaName: "প্রিমিয়াম ওভারসাইজড শার্ট",
+        category: "Men",
+        price: 1290,
+        discountPrice: 990,
+        stock: 25,
+        sizes: ["M","L","XL","XXL"],
+        colors: ["Black","White","Brown"],
+        images: [
+            "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=1000&q=90",
+            "https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?auto=format&fit=crop&w=1000&q=90"
+        ],
+        description:
+            "Relaxed oversized silhouette with a premium fashion finish."
+    },
+
+    {
+        id: "demo-sports-1",
+        name: "Performance Training Set",
+        banglaName: "পারফরম্যান্স ট্রেনিং সেট",
+        category: "Sports",
+        price: 1590,
+        discountPrice: 1290,
+        stock: 18,
+        sizes: ["S","M","L","XL"],
+        colors: ["Black","Grey"],
+        images: [
+            "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1000&q=90",
+            "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=1000&q=90"
+        ],
+        description:
+            "Lightweight performance wear made for training and movement."
+    }
+
+];
+
+
+let allProducts = [];
+
+
+/* =========================================
+   NORMALIZE
+========================================= */
+
+function normalize(product) {
+
+    return {
+
+        id: product.id,
+
+        name:
+            product.name ||
+            product.englishName ||
+            "UNDERWORLD Product",
+
+        banglaName:
+            product.banglaName ||
+            product.name,
+
+        category:
+            product.category ||
+            "Men",
+
+        price:
+            Number(
+                product.price ??
+                product.regularPrice ??
+                0
+            ),
+
+        discountPrice:
+            Number(
+                product.discountPrice ??
+                product.offerPrice ??
+                product.price ??
+                0
+            ),
+
+        stock:
+            Number(
+                product.stock ??
+                product.stockQuantity ??
+                0
+            ),
+
+        sizes:
+            Array.isArray(product.sizes)
+                ? product.sizes
+                : [],
+
+        colors:
+            Array.isArray(product.colors)
+                ? product.colors
+                : [],
+
+        images:
+            Array.isArray(product.images)
+                ? product.images
+                : [
+                    product.image ||
+                    product.imageUrl
+                ],
+
+        description:
+            product.description ||
+            "Premium UNDERWORLD product."
+
+    };
+
+}
+
+
+/* =========================================
+   LOAD
+========================================= */
+
+async function loadProducts() {
+
+    try {
+
+        const snapshot =
+            await getDocs(
+                collection(
+                    db,
+                    "products"
+                )
+            );
+
+        snapshot.forEach(item => {
+
+            allProducts.push(
+                normalize({
+                    id: item.id,
+                    ...item.data()
+                })
+            );
+
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+
+    if (
+        allProducts.length === 0
+    ) {
+
+        allProducts =
+            demoProducts.map(
+                normalize
+            );
+
+    }
+
+}
+
+
+/* =========================================
+   SHOW PRODUCT
+========================================= */
+
+async function showProduct() {
+
+    await loadProducts();
+
+
+    const product =
+        allProducts.find(
+            item =>
+                item.id === productId
+        );
+
+
+    const container =
+        document.getElementById(
+            "productContainer"
+        );
+
+
+    if (!product) {
+
+        container.innerHTML = `
+
+            <div class="product-loading">
+
+                Product Not Found
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    document.title =
+        product.name +
+        " — UNDERWORLD";
+
+
+    let selectedSize =
+        product.sizes?.[0] || "";
+
+    let selectedColor =
+        product.colors?.[0] || "";
+
+
+    const hasDiscount =
+        product.discountPrice <
+        product.price;
+
+
+    const discount =
+        hasDiscount
+            ? Math.round(
+                (
+                    (product.price -
+                    product.discountPrice)
+                    /
+                    product.price
+                ) * 100
+            )
+            : 0;
+
+
+    container.innerHTML = `
+
+        <!-- GALLERY -->
+
+        <div class="product-gallery">
+
+            <div class="gallery-thumbs">
+
+                ${
+                    product.images
+                    .map(
+                        (image, index) =>
+                            `
+                            <button
+                                class="
+                                    gallery-thumb
+                                    ${index === 0 ? "active" : ""}
+                                "
+                                data-image="${index}">
+
+                                <img
+                                    src="${image}"
+                                    alt="${product.name}">
+
+                            </button>
+                            `
+                    )
+                    .join("")
+                }
+
+            </div>
+
+
+            <div class="main-product-image">
+
+                <img
+                    id="mainProductImage"
+                    src="${product.images[0]}"
+                    alt="${product.name}">
+
+            </div>
+
+        </div>
+
+
+        <!-- INFO -->
+
+        <div class="product-detail-info">
+
+            <span class="detail-category">
+
+                ${product.category}
+
+            </span>
+
+
+            <h1 class="detail-title">
+
+                ${product.name}
+
+            </h1>
+
+
+            <div class="detail-price">
+
+                <strong class="detail-current-price">
+
+                    ৳${product.discountPrice.toLocaleString("en-BD")}
+
+                </strong>
+
+
+                ${
+                    hasDiscount
+                    ?
+                    `
+                    <span class="detail-old-price">
+
+                        ৳${product.price.toLocaleString("en-BD")}
+
+                    </span>
+
+                    <span class="detail-discount">
+
+                        -${discount}%
+
+                    </span>
+                    `
+                    :
+                    ""
+                }
+
+            </div>
+
+
+            <span class="detail-stock">
+
+                ${
+                    product.stock > 0
+                    ? `● ${product.stock} available`
+                    : "● Out of Stock"
+                }
+
+            </span>
+
+
+            <p class="detail-description">
+
+                ${product.description}
+
+            </p>
+
+
+            ${
+                product.sizes?.length
+                ?
+                `
+                <div class="option-group">
+
+                    <div class="option-title">
+
+                        <span>
+                            SELECT SIZE
+                        </span>
+
+                    </div>
+
+
+                    <div class="option-list">
+
+                        ${
+                            product.sizes
+                            .map(
+                                (size,index) =>
+                                    `
+                                    <button
+                                        class="
+                                            option-btn
+                                            size-option
+                                            ${index === 0 ? "selected" : ""}
+                                        "
+                                        data-size="${size}">
+
+                                        ${size}
+
+                                    </button>
+                                    `
+                            )
+                            .join("")
+                        }
+
+                    </div>
+
+                </div>
+                `
+                :
+                ""
+            }
+
+
+            ${
+                product.colors?.length
+                ?
+                `
+                <div class="option-group">
+
+                    <div class="option-title">
+
+                        <span>
+                            SELECT COLOR
+                        </span>
+
+                    </div>
+
+
+                    <div class="option-list">
+
+                        ${
+                            product.colors
+                            .map(
+                                (color,index) =>
+                                    `
+                                    <button
+                                        class="
+                                            option-btn
+                                            color-option
+                                            ${index === 0 ? "selected" : ""}
+                                        "
+                                        data-color="${color}">
+
+                                        ${color}
+
+                                    </button>
+                                    `
+                            )
+                            .join("")
+                        }
+
+                    </div>
+
+                </div>
+                `
+                :
+                ""
+            }
+
+
+            <div class="detail-actions">
+
+                <button
+                    class="add-cart-btn"
+                    id="addProductCart"
+                    ${product.stock <= 0 ? "disabled" : ""}>
+
+                    ${
+                        product.stock > 0
+                        ? "ADD TO BAG"
+                        : "OUT OF STOCK"
+                    }
+
+                    <i class="fa-solid fa-arrow-right"></i>
+
+                </button>
+
+
+                <button
+                    class="detail-wishlist"
+                    id="detailWishlist">
+
+                    <i class="fa-regular fa-heart"></i>
+
+                </button>
+
+            </div>
+
+
+            <div class="detail-meta">
+
+                <div class="meta-row">
+
+                    <span>
+                        CATEGORY
+                    </span>
+
+                    <strong>
+                        ${product.category}
+                    </strong>
+
+                </div>
+
+
+                <div class="meta-row">
+
+                    <span>
+                        STOCK
+                    </span>
+
+                    <strong>
+                        ${product.stock}
+                    </strong>
+
+                </div>
+
+
+                <div class="meta-row">
+
+                    <span>
+                        BRAND
+                    </span>
+
+                    <strong>
+                        UNDERWORLD
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    /* GALLERY */
+
+    document
+        .querySelectorAll(
+            ".gallery-thumb"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    document
+                        .querySelectorAll(
+                            ".gallery-thumb"
+                        )
+                        .forEach(
+                            item =>
+                                item.classList.remove(
+                                    "active"
+                                )
+                        );
+
+                    button.classList.add(
+                        "active"
+                    );
+
+
+                    document
+                        .getElementById(
+                            "mainProductImage"
+                        )
+                        .src =
+                        product.images[
+                            Number(
+                                button.dataset.image
+                            )
+                        ];
+
+                }
+            );
+
+        });
+
+
+    /* SIZE */
+
+    document
+        .querySelectorAll(
+            ".size-option"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    document
+                        .querySelectorAll(
+                            ".size-option"
+                        )
+                        .forEach(
+                            item =>
+                                item.classList.remove(
+                                    "selected"
+                                )
+                        );
+
+                    button.classList.add(
+                        "selected"
+                    );
+
+                    selectedSize =
+                        button.dataset.size;
+
+                }
+            );
+
+        });
+
+
+    /* COLOR */
+
+    document
+        .querySelectorAll(
+            ".color-option"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    document
+                        .querySelectorAll(
+                            ".color-option"
+                        )
+                        .forEach(
+                            item =>
+                                item.classList.remove(
+                                    "selected"
+                                )
+                        );
+
+                    button.classList.add(
+                        "selected"
+                    );
+
+                    selectedColor =
+                        button.dataset.color;
+
+                }
+            );
+
+        });
+
+
+    /* ADD CART */
+
+    document
+        .getElementById(
+            "addProductCart"
+        )
+        ?.addEventListener(
+            "click",
+            () => {
+
+                let cart =
+                    JSON.parse(
+                        localStorage.getItem(
+                            "underworldCart"
+                        )
+                    ) || [];
+
+
+                const existing =
+                    cart.find(
+                        item =>
+                            item.id === product.id &&
+                            item.size === selectedSize &&
+                            item.color === selectedColor
+                    );
+
+
+                if (existing) {
+
+                    existing.quantity += 1;
+
+                } else {
+
+                    cart.push({
+
+                        id:
+                            product.id,
+
+                        name:
+                            product.name,
+
+                        banglaName:
+                            product.banglaName,
+
+                        price:
+                            product.discountPrice,
+
+                        image:
+                            product.images[0],
+
+                        size:
+                            selectedSize,
+
+                        color:
+                            selectedColor,
+
+                        quantity:
+                            1
+
+                    });
+
+                }
+
+
+                localStorage.setItem(
+                    "underworldCart",
+                    JSON.stringify(cart)
+                );
+
+
+                showToast(
+                    "Added to your bag"
+                );
+
+            }
+        );
+
+
+    /* WISHLIST */
+
+    document
+        .getElementById(
+            "detailWishlist"
+        )
+        ?.addEventListener(
+            "click",
+            () => {
+
+                let wishlist =
+                    JSON.parse(
+                        localStorage.getItem(
+                            "underworldWishlist"
+                        )
+                    ) || [];
+
+
+                if (
+                    wishlist.includes(
+                        product.id
+                    )
+                ) {
+
+                    wishlist =
+                        wishlist.filter(
+                            id =>
+                                id !==
+                                product.id
+                        );
+
+                    showToast(
+                        "Removed from wishlist"
+                    );
+
+                } else {
+
+                    wishlist.push(
+                        product.id
+                    );
+
+                    showToast(
+                        "Added to wishlist"
+                    );
+
+                }
+
+
+                localStorage.setItem(
+                    "underworldWishlist",
+                    JSON.stringify(
+                        wishlist
+                    )
+                );
+
+            }
+        );
+
+
+    /* RELATED */
+
+    renderRelated(
+        product.category,
+        product.id
+    );
+
+}
+
+
+/* =========================================
+   RELATED
+========================================= */
+
+function renderRelated(
+    category,
+    currentId
+) {
+
+    const related =
+        allProducts
+            .filter(
+                product =>
+                    product.category === category &&
+                    product.id !== currentId
+            )
+            .slice(0,4);
+
+
+    const container =
+        document.getElementById(
+            "relatedProducts"
+        );
+
+
+    container.innerHTML =
+        related.map(
+            product => `
+
+                <article class="product-card">
+
+                    <div class="product-image">
+
+                        <img
+                            src="${product.images[0]}"
+                            alt="${product.name}">
+
+                        <a
+                            href="product.html?id=${encodeURIComponent(product.id)}"
+                            class="product-view">
+
+                            VIEW PRODUCT
+
+                        </a>
+
+                    </div>
+
+
+                    <div class="product-info">
+
+                        <span class="product-category">
+
+                            ${product.category}
+
+                        </span>
+
+                        <h3 class="product-name">
+
+                            ${product.name}
+
+                        </h3>
+
+                        <div class="product-price">
+
+                            <span class="current-price">
+
+                                ৳${product.discountPrice.toLocaleString("en-BD")}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+            `
+        ).join("");
+
+}
+
+
+/* =========================================
+   TOAST
+========================================= */
+
+let toastTimer;
+
+
+function showToast(message) {
+
+    const toast =
+        document.getElementById(
+            "toast"
+        );
+
+    const text =
+        document.getElementById(
+            "toastMessage"
+        );
+
+
+    text.textContent =
+        message;
+
+    toast.classList.add(
+        "show"
+    );
+
+
+    clearTimeout(
+        toastTimer
+    );
+
+
+    toastTimer =
+        setTimeout(
+            () =>
+                toast.classList.remove(
+                    "show"
+                ),
+            2500
+        );
+
+}
+
+
+/* =========================================
+   START
+========================================= */
+
+showProduct();
+
+</script>
+
+</body>
+</html>
