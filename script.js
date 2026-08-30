@@ -1,2413 +1,1050 @@
-/* =====================================================
-   UNDERWORLD — MAIN JAVASCRIPT
-   Firebase + Products + Cart + Wishlist + Search
-===================================================== */
-
-
-/* =====================================================
-   FIREBASE
-===================================================== */
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
-    initializeApp
-} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-
-import {
-    getFirestore,
-    collection,
-    getDocs,
-    doc,
-    getDoc,
-    addDoc,
-    serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+  getFirestore,
+  collection,
+  getDocs,
+  addDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-/* YOUR FIREBASE CONFIG */
+/* =========================
+   YOUR FIREBASE CONFIG
+========================= */
 
 const firebaseConfig = {
-
-    apiKey: "AIzaSyAyU3Vgiwq0k0P-LJi-o5C5wnmbTHxwFYw",
-
-    authDomain:
-        "underworld-f7aae.firebaseapp.com",
-
-    projectId:
-        "underworld-f7aae",
-
-    storageBucket:
-        "underworld-f7aae.firebasestorage.app",
-
-    messagingSenderId:
-        "1054711880818",
-
-    appId:
-        "1:1054711880818:web:7a97b6fc1413e3b4a6eb"
-
+  apiKey: "AIzaSyBgcjFRNOfOdg4ntCjB6LwA8J-fvxPfrPM",
+  authDomain: "underworld-f7aae.firebaseapp.com",
+  projectId: "underworld-f7aae",
+  storageBucket: "underworld-f7aae.firebasestorage.app",
+  messagingSenderId: "1054711880818",
+  appId: "1:1054711880818:web:4ce58efeb3dbd3374ab6eb"
 };
 
-
 const app = initializeApp(firebaseConfig);
-
 const db = getFirestore(app);
 
 
-/* =====================================================
-   GLOBAL STATE
-===================================================== */
+/* =========================
+   GLOBAL DATA
+========================= */
 
 let products = [];
-
-let filteredProducts = [];
-
-let currentCategory = "All";
-
-let currentLanguage =
-    localStorage.getItem("underworldLanguage") || "en";
-
-let cart =
-    JSON.parse(localStorage.getItem("underworldCart")) || [];
-
-let wishlist =
-    JSON.parse(localStorage.getItem("underworldWishlist")) || [];
+let cart = JSON.parse(localStorage.getItem("underworldCart") || "[]");
+let wishlist = JSON.parse(localStorage.getItem("underworldWishlist") || "[]");
+let currentFilter = "All";
+let currentProduct = null;
+let selectedSize = "";
+let selectedColor = "";
 
 
-/* =====================================================
+/* =========================
    DOM
-===================================================== */
+========================= */
 
-const productsGrid =
-    document.getElementById("productsGrid");
+const productsGrid = document.getElementById("productsGrid");
+const cartCount = document.getElementById("cartCount");
+const cartItems = document.getElementById("cartItems");
+const cartTotal = document.getElementById("cartTotal");
 
-const emptyProducts =
-    document.getElementById("emptyProducts");
 
-const cartCount =
-    document.getElementById("cartCount");
+/* =========================
+   LOAD PRODUCTS
+========================= */
 
-const wishlistCount =
-    document.getElementById("wishlistCount");
+async function loadProducts(){
 
-const cartItems =
-    document.getElementById("cartItems");
+  try{
 
-const cartEmpty =
-    document.getElementById("cartEmpty");
+    const snapshot = await getDocs(collection(db,"products"));
 
-const cartTotal =
-    document.getElementById("cartTotal");
+    products = [];
 
-const wishlistItems =
-    document.getElementById("wishlistItems");
-
-const currentYear =
-    document.getElementById("currentYear");
-
-
-/* =====================================================
-   DEMO PRODUCTS
-   These show if Firebase has no products yet.
-===================================================== */
-
-const demoProducts = [
-
-    {
-        id: "demo-women-1",
-
-        name: "Elegant Minimal Dress",
-
-        banglaName:
-            "এলিগ্যান্ট মিনিমাল ড্রেস",
-
-        category: "Women",
-
-        price: 1890,
-
-        discountPrice: 1490,
-
-        stock: 12,
-
-        stockStatus: "In Stock",
-
-        sizes: ["S", "M", "L", "XL"],
-
-        colors: ["Black", "Beige"],
-
-        images: [
-
-            "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=900&q=85",
-
-            "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?auto=format&fit=crop&w=900&q=85"
-
-        ],
-
-        description:
-            "A premium everyday dress designed for a confident modern look.",
-
-        banglaDescription:
-            "আধুনিক ও আত্মবিশ্বাসী লুকের জন্য প্রিমিয়াম মানের ড্রেস।",
-
-        popular: true
-
-    },
-
-
-    {
-        id: "demo-men-1",
-
-        name: "Premium Oversized Shirt",
-
-        banglaName:
-            "প্রিমিয়াম ওভারসাইজড শার্ট",
-
-        category: "Men",
-
-        price: 1290,
-
-        discountPrice: 990,
-
-        stock: 25,
-
-        stockStatus: "In Stock",
-
-        sizes: ["M", "L", "XL", "XXL"],
-
-        colors: ["Black", "White", "Brown"],
-
-        images: [
-
-            "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=900&q=85",
-
-            "https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?auto=format&fit=crop&w=900&q=85"
-
-        ],
-
-        description:
-            "Relaxed oversized silhouette with a premium fashion finish.",
-
-        banglaDescription:
-            "প্রিমিয়াম ফ্যাশন ফিনিশসহ আরামদায়ক ওভারসাইজড শার্ট।",
-
-        popular: true
-
-    },
-
-
-    {
-        id: "demo-sports-1",
-
-        name: "Performance Training Set",
-
-        banglaName:
-            "পারফরম্যান্স ট্রেনিং সেট",
-
-        category: "Sports",
-
-        price: 1590,
-
-        discountPrice: 1290,
-
-        stock: 18,
-
-        stockStatus: "In Stock",
-
-        sizes: ["S", "M", "L", "XL"],
-
-        colors: ["Black", "Grey"],
-
-        images: [
-
-            "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=900&q=85",
-
-            "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=900&q=85"
-
-        ],
-
-        description:
-            "Lightweight performance wear made for training and movement.",
-
-        banglaDescription:
-            "ট্রেনিং ও শরীরচর্চার জন্য হালকা ও আরামদায়ক পারফরম্যান্স পোশাক।",
-
-        popular: true
-
-    },
-
-
-    {
-        id: "demo-women-2",
-
-        name: "Classic Blazer",
-
-        banglaName:
-            "ক্লাসিক ব্লেজার",
-
-        category: "Women",
-
-        price: 2490,
-
-        discountPrice: 2190,
-
-        stock: 8,
-
-        stockStatus: "Low Stock",
-
-        sizes: ["S", "M", "L"],
-
-        colors: ["Cream", "Black"],
-
-        images: [
-
-            "https://images.unsplash.com/photo-1591369822096-ffd140ec948f?auto=format&fit=crop&w=900&q=85",
-
-            "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?auto=format&fit=crop&w=900&q=85"
-
-        ],
-
-        description:
-            "Timeless blazer with a clean premium silhouette.",
-
-        banglaDescription:
-            "পরিপাটি ও প্রিমিয়াম লুকের জন্য ক্লাসিক ব্লেজার।",
-
-        popular: true
-
-    },
-
-
-    {
-        id: "demo-men-2",
-
-        name: "Urban Cargo Pants",
-
-        banglaName:
-            "আরবান কার্গো প্যান্ট",
-
-        category: "Men",
-
-        price: 1790,
-
-        discountPrice: 1490,
-
-        stock: 15,
-
-        stockStatus: "In Stock",
-
-        sizes: ["30", "32", "34", "36"],
-
-        colors: ["Black", "Olive"],
-
-        images: [
-
-            "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=900&q=85",
-
-            "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?auto=format&fit=crop&w=900&q=85"
-
-        ],
-
-        description:
-            "Modern cargo pants with a relaxed urban fit.",
-
-        banglaDescription:
-            "আধুনিক আরবান লুকের জন্য আরামদায়ক কার্গো প্যান্ট।",
-
-        popular: true
-
-    },
-
-
-    {
-        id: "demo-sports-2",
-
-        name: "Essential Training Tee",
-
-        banglaName:
-            "এসেনশিয়াল ট্রেনিং টি-শার্ট",
-
-        category: "Sports",
-
-        price: 790,
-
-        discountPrice: 650,
-
-        stock: 35,
-
-        stockStatus: "In Stock",
-
-        sizes: ["S", "M", "L", "XL"],
-
-        colors: ["Black", "White"],
-
-        images: [
-
-            "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=900&q=85",
-
-            "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=900&q=85"
-
-        ],
-
-        description:
-            "Lightweight everyday training t-shirt.",
-
-        banglaDescription:
-            "প্রতিদিনের ট্রেনিংয়ের জন্য হালকা ও আরামদায়ক টি-শার্ট।",
-
-        popular: true
-
-    }
-
-];
-
-
-/* =====================================================
-   INIT
-===================================================== */
-
-document.addEventListener("DOMContentLoaded", async () => {
-
-    currentYear.textContent =
-        new Date().getFullYear();
-
-    setLanguage(currentLanguage);
-
-    updateCounts();
-
-    setupEvents();
-
-    setupHero();
-
-    await loadProducts();
+    snapshot.forEach(doc => {
+      products.push({
+        id: doc.id,
+        ...doc.data()
+      });
+    });
 
     renderProducts();
 
-    renderCart();
+  }catch(error){
 
-    renderWishlist();
+    console.error(error);
 
-    setTimeout(() => {
+    productsGrid.innerHTML = `
+      <div class="loading">
+        Unable to load products.
+      </div>
+    `;
+  }
+}
 
-        document
-            .getElementById("pageLoader")
-            ?.classList.add("hide");
 
-    }, 600);
+/* =========================
+   RENDER PRODUCTS
+========================= */
+
+function renderProducts(){
+
+  let filtered = products.filter(product => {
+
+    if(currentFilter === "All"){
+      return true;
+    }
+
+    return String(product.category || "").toLowerCase()
+      === currentFilter.toLowerCase();
+
+  });
+
+
+  const search = document.getElementById("searchInput")?.value
+    ?.trim()
+    .toLowerCase();
+
+  if(search){
+
+    filtered = filtered.filter(product => {
+
+      return String(product.name || "").toLowerCase().includes(search)
+        || String(product.category || "").toLowerCase().includes(search)
+        || String(product.tags || "").toLowerCase().includes(search);
+
+    });
+
+  }
+
+
+  if(filtered.length === 0){
+
+    productsGrid.innerHTML = `
+      <div class="loading">
+        No products found.
+      </div>
+    `;
+
+    return;
+  }
+
+
+  productsGrid.innerHTML = filtered.map(product => {
+
+    const price = Number(product.discountPrice || product.price || 0);
+    const oldPrice = Number(product.price || 0);
+
+    const discount =
+      product.discountPrice && oldPrice > price
+      ? Math.round((1 - price / oldPrice) * 100)
+      : 0;
+
+    const image =
+      product.images?.[0]
+      || product.image
+      || "https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?auto=format&fit=crop&w=800&q=80";
+
+
+    return `
+      <article class="product-card" data-id="${product.id}">
+
+        ${discount > 0
+          ? `<span class="product-badge">${discount}% OFF</span>`
+          : ""
+        }
+
+        <button class="wishlist" data-wishlist="${product.id}">
+          ${wishlist.includes(product.id) ? "♥" : "♡"}
+        </button>
+
+        <div class="product-image">
+          <img
+            src="${image}"
+            alt="${escapeHTML(product.name || "Product")}"
+            loading="lazy"
+          >
+        </div>
+
+        <div class="product-info">
+
+          <span class="product-category">
+            ${escapeHTML(product.category || "")}
+          </span>
+
+          <h3>${escapeHTML(product.name || "Untitled Product")}</h3>
+
+          <div class="price">
+            ৳${price.toLocaleString()}
+
+            ${
+              discount > 0
+              ? `<span class="old-price">৳${oldPrice.toLocaleString()}</span>`
+              : ""
+            }
+          </div>
+
+        </div>
+
+      </article>
+    `;
+
+  }).join("");
+
+
+  document.querySelectorAll(".product-card").forEach(card => {
+
+    card.addEventListener("click", e => {
+
+      if(e.target.closest(".wishlist")) return;
+
+      const id = card.dataset.id;
+
+      const product = products.find(p => p.id === id);
+
+      if(product){
+        openProduct(product);
+      }
+
+    });
+
+  });
+
+
+  document.querySelectorAll("[data-wishlist]").forEach(button => {
+
+    button.addEventListener("click", e => {
+
+      e.stopPropagation();
+
+      toggleWishlist(button.dataset.wishlist);
+
+    });
+
+  });
+
+}
+
+
+/* =========================
+   WISHLIST
+========================= */
+
+function toggleWishlist(id){
+
+  if(wishlist.includes(id)){
+
+    wishlist = wishlist.filter(item => item !== id);
+
+    showToast("Removed from wishlist");
+
+  }else{
+
+    wishlist.push(id);
+
+    showToast("Added to wishlist");
+
+  }
+
+  localStorage.setItem(
+    "underworldWishlist",
+    JSON.stringify(wishlist)
+  );
+
+  renderProducts();
+}
+
+
+/* =========================
+   PRODUCT DETAILS
+========================= */
+
+function openProduct(product){
+
+  currentProduct = product;
+
+  selectedSize = "";
+  selectedColor = "";
+
+  const modal = document.getElementById("productModal");
+  const details = document.getElementById("productDetails");
+
+  const images =
+    product.images?.length
+      ? product.images
+      : [product.image];
+
+
+  const price =
+    Number(product.discountPrice || product.price || 0);
+
+  const oldPrice =
+    Number(product.price || 0);
+
+
+  const sizes =
+    Array.isArray(product.sizes)
+      ? product.sizes
+      : String(product.sizes || "")
+          .split(",")
+          .map(x => x.trim())
+          .filter(Boolean);
+
+
+  const colors =
+    Array.isArray(product.colors)
+      ? product.colors
+      : String(product.colors || "")
+          .split(",")
+          .map(x => x.trim())
+          .filter(Boolean);
+
+
+  details.innerHTML = `
+
+    <div class="product-details">
+
+      <div class="detail-gallery">
+
+        ${images.map(image => `
+          <img src="${image}" alt="${escapeHTML(product.name || "")}">
+        `).join("")}
+
+      </div>
+
+
+      <div class="detail-content">
+
+        <span class="product-category">
+          ${escapeHTML(product.category || "")}
+        </span>
+
+        <h2>
+          ${escapeHTML(product.name || "")}
+        </h2>
+
+        <div class="detail-price">
+
+          ৳${price.toLocaleString()}
+
+          ${
+            oldPrice > price
+            ? `<span class="old-price">
+                ৳${oldPrice.toLocaleString()}
+              </span>`
+            : ""
+          }
+
+        </div>
+
+
+        <p class="detail-description">
+          ${escapeHTML(product.description || "Premium quality product from UNDERWORLD.")}
+        </p>
+
+
+        ${
+          sizes.length
+          ? `
+            <div class="option-title">SELECT SIZE</div>
+
+            <div class="option-list">
+              ${sizes.map(size => `
+                <button class="option-btn size-option"
+                  data-size="${escapeHTML(size)}">
+                  ${escapeHTML(size)}
+                </button>
+              `).join("")}
+            </div>
+          `
+          : ""
+        }
+
+
+        ${
+          colors.length
+          ? `
+            <div class="option-title">SELECT COLOR</div>
+
+            <div class="option-list">
+              ${colors.map(color => `
+                <button class="option-btn color-option"
+                  data-color="${escapeHTML(color)}">
+                  ${escapeHTML(color)}
+                </button>
+              `).join("")}
+            </div>
+          `
+          : ""
+        }
+
+
+        <div class="option-title">
+          STOCK:
+          ${
+            Number(product.stock || 0) > 0
+            ? `${product.stock} AVAILABLE`
+            : "OUT OF STOCK"
+          }
+        </div>
+
+
+        <button
+          id="addToCartBtn"
+          class="primary-btn"
+          style="width:100%;margin-top:20px"
+          ${Number(product.stock || 0) <= 0 ? "disabled" : ""}
+        >
+          ADD TO CART
+        </button>
+
+      </div>
+
+    </div>
+
+  `;
+
+
+  modal.classList.add("open");
+
+
+  document.querySelectorAll(".size-option").forEach(button => {
+
+    button.addEventListener("click", () => {
+
+      selectedSize = button.dataset.size;
+
+      document.querySelectorAll(".size-option")
+        .forEach(x => x.classList.remove("selected"));
+
+      button.classList.add("selected");
+
+    });
+
+  });
+
+
+  document.querySelectorAll(".color-option").forEach(button => {
+
+    button.addEventListener("click", () => {
+
+      selectedColor = button.dataset.color;
+
+      document.querySelectorAll(".color-option")
+        .forEach(x => x.classList.remove("selected"));
+
+      button.classList.add("selected");
+
+    });
+
+  });
+
+
+  document.getElementById("addToCartBtn")
+    ?.addEventListener("click", () => {
+
+      addToCart(product);
+
+    });
+
+}
+
+
+/* =========================
+   CART
+========================= */
+
+function addToCart(product){
+
+  const price =
+    Number(product.discountPrice || product.price || 0);
+
+
+  const existing = cart.find(item =>
+    item.id === product.id &&
+    item.size === selectedSize &&
+    item.color === selectedColor
+  );
+
+
+  if(existing){
+
+    existing.quantity += 1;
+
+  }else{
+
+    cart.push({
+
+      id: product.id,
+      name: product.name,
+      image: product.images?.[0] || product.image,
+      price,
+      size: selectedSize,
+      color: selectedColor,
+      quantity: 1
+
+    });
+
+  }
+
+
+  saveCart();
+
+  closeModal("productModal");
+
+  openCart();
+
+  showToast("Added to cart");
+}
+
+
+function saveCart(){
+
+  localStorage.setItem(
+    "underworldCart",
+    JSON.stringify(cart)
+  );
+
+  renderCart();
+
+}
+
+
+function renderCart(){
+
+  const totalQuantity =
+    cart.reduce((sum,item) => sum + item.quantity,0);
+
+  cartCount.textContent = totalQuantity;
+
+
+  if(cart.length === 0){
+
+    cartItems.innerHTML = `
+      <div class="loading">
+        Your cart is empty.
+      </div>
+    `;
+
+    cartTotal.textContent = "৳0";
+
+    return;
+  }
+
+
+  cartItems.innerHTML = cart.map((item,index) => `
+
+    <div class="cart-item">
+
+      <img src="${item.image}" alt="">
+
+      <div class="cart-item-info">
+
+        <h4>${escapeHTML(item.name)}</h4>
+
+        <p>৳${item.price.toLocaleString()}</p>
+
+        ${item.size ? `<p>Size: ${escapeHTML(item.size)}</p>` : ""}
+
+        ${item.color ? `<p>Color: ${escapeHTML(item.color)}</p>` : ""}
+
+        <div class="qty">
+
+          <button data-minus="${index}">−</button>
+
+          <span>${item.quantity}</span>
+
+          <button data-plus="${index}">+</button>
+
+          <button class="remove-cart" data-remove="${index}">
+            REMOVE
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  `).join("");
+
+
+  document.querySelectorAll("[data-minus]").forEach(btn => {
+
+    btn.onclick = () => {
+
+      const i = Number(btn.dataset.minus);
+
+      cart[i].quantity--;
+
+      if(cart[i].quantity <= 0){
+        cart.splice(i,1);
+      }
+
+      saveCart();
+
+    };
+
+  });
+
+
+  document.querySelectorAll("[data-plus]").forEach(btn => {
+
+    btn.onclick = () => {
+
+      cart[Number(btn.dataset.plus)].quantity++;
+
+      saveCart();
+
+    };
+
+  });
+
+
+  document.querySelectorAll("[data-remove]").forEach(btn => {
+
+    btn.onclick = () => {
+
+      cart.splice(Number(btn.dataset.remove),1);
+
+      saveCart();
+
+    };
+
+  });
+
+
+  const total =
+    cart.reduce(
+      (sum,item) => sum + item.price * item.quantity,
+      0
+    );
+
+  cartTotal.textContent =
+    `৳${total.toLocaleString()}`;
+
+}
+
+
+/* =========================
+   CHECKOUT
+========================= */
+
+document.getElementById("checkoutForm")
+  .addEventListener("submit", async e => {
+
+    e.preventDefault();
+
+    if(cart.length === 0){
+
+      showToast("Your cart is empty");
+
+      return;
+
+    }
+
+
+    const customerName =
+      document.getElementById("customerName").value.trim();
+
+    const customerPhone =
+      document.getElementById("customerPhone").value.trim();
+
+    const customerAddress =
+      document.getElementById("customerAddress").value.trim();
+
+    const paymentMethod =
+      document.getElementById("paymentMethod").value;
+
+
+    const total =
+      cart.reduce(
+        (sum,item) => sum + item.price * item.quantity,
+        0
+      );
+
+
+    try{
+
+      await addDoc(collection(db,"orders"),{
+
+        customerName,
+        customerPhone,
+        customerAddress,
+        paymentMethod,
+
+        items:cart,
+
+        total,
+
+        status:"Pending",
+
+        createdAt:serverTimestamp()
+
+      });
+
+
+      cart = [];
+
+      saveCart();
+
+      closeModal("checkoutModal");
+
+      closeCart();
+
+      document.getElementById("checkoutForm").reset();
+
+      showToast("Order placed successfully!");
+
+    }catch(error){
+
+      console.error(error);
+
+      showToast("Order failed. Please try again.");
+
+    }
+
+  });
+
+
+/* =========================
+   CHECKOUT OPEN
+========================= */
+
+document.getElementById("checkoutBtn")
+  .addEventListener("click", () => {
+
+    if(cart.length === 0){
+
+      showToast("Your cart is empty");
+
+      return;
+
+    }
+
+
+    const total =
+      cart.reduce(
+        (sum,item) => sum + item.price * item.quantity,
+        0
+      );
+
+    document.getElementById("checkoutTotal")
+      .textContent =
+      `৳${total.toLocaleString()}`;
+
+    document.getElementById("checkoutModal")
+      .classList.add("open");
+
+  });
+
+
+/* =========================
+   CART UI
+========================= */
+
+function openCart(){
+
+  document.getElementById("cartDrawer")
+    .classList.add("open");
+
+  document.getElementById("cartOverlay")
+    .classList.add("open");
+
+}
+
+function closeCart(){
+
+  document.getElementById("cartDrawer")
+    .classList.remove("open");
+
+  document.getElementById("cartOverlay")
+    .classList.remove("open");
+
+}
+
+
+document.getElementById("cartBtn")
+  .onclick = openCart;
+
+document.getElementById("closeCart")
+  .onclick = closeCart;
+
+document.getElementById("cartOverlay")
+  .onclick = closeCart;
+
+
+/* =========================
+   SEARCH
+========================= */
+
+document.getElementById("searchBtn")
+  .onclick = () => {
+
+    document.getElementById("searchPanel")
+      .classList.add("open");
+
+    document.getElementById("searchInput")
+      .focus();
+
+  };
+
+
+document.getElementById("closeSearch")
+  .onclick = () => {
+
+    document.getElementById("searchPanel")
+      .classList.remove("open");
+
+  };
+
+
+document.getElementById("searchInput")
+  .addEventListener("input",renderProducts);
+
+
+/* =========================
+   FILTERS
+========================= */
+
+document.querySelectorAll(".filter")
+  .forEach(button => {
+
+    button.addEventListener("click", () => {
+
+      currentFilter = button.dataset.filter;
+
+      document.querySelectorAll(".filter")
+        .forEach(x => x.classList.remove("active"));
+
+      button.classList.add("active");
+
+      renderProducts();
+
+    });
+
+  });
+
+
+/* =========================
+   CATEGORY BUTTONS
+========================= */
+
+document.querySelectorAll("[data-category]")
+  .forEach(button => {
+
+    button.addEventListener("click", () => {
+
+      currentFilter = button.dataset.category;
+
+      document.querySelectorAll(".filter")
+        .forEach(x => {
+
+          x.classList.toggle(
+            "active",
+            x.dataset.filter === currentFilter
+          );
+
+        });
+
+      document.getElementById("shop")
+        .scrollIntoView({
+          behavior:"smooth"
+        });
+
+      renderProducts();
+
+    });
+
+  });
+
+
+/* =========================
+   HERO SLIDER
+========================= */
+
+let slideIndex = 0;
+
+const slides =
+  document.querySelectorAll(".hero-slide");
+
+const dots =
+  document.querySelectorAll(".hero-dot");
+
+
+function showSlide(index){
+
+  slides.forEach((slide,i) => {
+
+    slide.classList.toggle(
+      "active",
+      i === index
+    );
+
+  });
+
+
+  dots.forEach((dot,i) => {
+
+    dot.classList.toggle(
+      "active",
+      i === index
+    );
+
+  });
+
+}
+
+
+function nextSlide(){
+
+  slideIndex =
+    (slideIndex + 1) % slides.length;
+
+  showSlide(slideIndex);
+
+}
+
+
+setInterval(nextSlide,5000);
+
+
+dots.forEach((dot,index) => {
+
+  dot.onclick = () => {
+
+    slideIndex = index;
+
+    showSlide(index);
+
+  };
 
 });
 
 
-/* =====================================================
-   FIREBASE PRODUCT LOAD
-===================================================== */
+/* =========================
+   MOBILE MENU
+========================= */
 
-async function loadProducts() {
+document.getElementById("menuBtn")
+  .onclick = () => {
 
-    try {
+    document.getElementById("mobileMenu")
+      .classList.toggle("open");
 
-        const snapshot =
-            await getDocs(
-                collection(db, "products")
-            );
+  };
 
-        const firebaseProducts = [];
 
-        snapshot.forEach((item) => {
+/* =========================
+   LANGUAGE
+========================= */
 
-            firebaseProducts.push({
-
-                id: item.id,
-
-                ...item.data()
-
-            });
-
-        });
-
-
-        /*
-          Firebase products available:
-          use them.
-
-          Otherwise demo products.
-        */
-
-        if (firebaseProducts.length > 0) {
-
-            products = firebaseProducts;
-
-        } else {
-
-            products = demoProducts;
-
-        }
-
-    } catch (error) {
-
-        console.error(
-            "Firebase product error:",
-            error
-        );
-
-        products = demoProducts;
-
-        showToast(
-            "Demo products loaded. Firebase connection needs checking."
-        );
-
-    }
-
-
-    filteredProducts =
-        [...products];
-
-}
-
-
-/* =====================================================
-   NORMALIZE PRODUCT
-===================================================== */
-
-function normalizeProduct(product) {
-
-    return {
-
-        id: product.id,
-
-        name:
-            product.name ||
-            product.englishName ||
-            "UNDERWORLD Product",
-
-        banglaName:
-            product.banglaName ||
-            product.banglaProductName ||
-            product.name ||
-            "পণ্য",
-
-        category:
-            product.category ||
-            "Men",
-
-        price:
-            Number(
-                product.price ??
-                product.regularPrice ??
-                0
-            ),
-
-        discountPrice:
-            Number(
-                product.discountPrice ??
-                product.offerPrice ??
-                product.price ??
-                product.regularPrice ??
-                0
-            ),
-
-        stock:
-            Number(
-                product.stock ??
-                product.stockQuantity ??
-                0
-            ),
-
-        stockStatus:
-            product.stockStatus ||
-            (Number(product.stock || 0) > 0
-                ? "In Stock"
-                : "Out of Stock"),
-
-        sizes:
-            Array.isArray(product.sizes)
-                ? product.sizes
-                : [],
-
-        colors:
-            Array.isArray(product.colors)
-                ? product.colors
-                : [],
-
-        images:
-            Array.isArray(product.images)
-                ? product.images
-                : [
-                    product.image ||
-                    product.imageUrl ||
-                    "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=900&q=85"
-                ],
-
-        description:
-            product.description ||
-            "Premium UNDERWORLD collection.",
-
-        banglaDescription:
-            product.banglaDescription ||
-            product.banglaDetails ||
-            "UNDERWORLD-এর প্রিমিয়াম কালেকশন।",
-
-        popular:
-            product.popular !== false
-
-    };
-
-}
-
-
-/* =====================================================
-   RENDER PRODUCTS
-===================================================== */
-
-function renderProducts() {
-
-    if (!productsGrid) return;
-
-    let list =
-        products.map(normalizeProduct);
-
-
-    /* CATEGORY */
-
-    if (currentCategory !== "All") {
-
-        list =
-            list.filter(
-                product =>
-                    product.category.toLowerCase() ===
-                    currentCategory.toLowerCase()
-            );
-
-    }
-
-
-    filteredProducts = list;
-
-
-    if (list.length === 0) {
-
-        productsGrid.innerHTML = "";
-
-        emptyProducts.classList.remove("hidden");
-
-        return;
-
-    }
-
-
-    emptyProducts.classList.add("hidden");
-
-
-    productsGrid.innerHTML =
-        list.map(
-            (product, index) =>
-                productCardHTML(
-                    product,
-                    index
-                )
-        ).join("");
-
-
-    attachProductEvents();
-
-}
-
-
-/* =====================================================
-   PRODUCT CARD
-===================================================== */
-
-function productCardHTML(product, index) {
-
-    const liked =
-        wishlist.includes(product.id);
-
-    const hasDiscount =
-        product.discountPrice < product.price;
-
-    const discountPercent =
-        hasDiscount
-            ? Math.round(
-                (
-                    (product.price -
-                    product.discountPrice)
-                    /
-                    product.price
-                ) * 100
-            )
-            : 0;
-
-
-    const productName =
-        currentLanguage === "bn"
-            ? product.banglaName
-            : product.name;
-
-
-    return `
-
-        <article
-            class="product-card"
-            style="animation-delay:${index * 70}ms"
-            data-id="${escapeHTML(product.id)}">
-
-            <div class="product-image">
-
-                <img
-                    src="${escapeHTML(product.images[0])}"
-                    alt="${escapeHTML(productName)}"
-                    loading="lazy"
-                    onerror="this.src='https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=900&q=85'">
-
-
-                ${
-                    hasDiscount
-                    ?
-                    `
-                    <span class="product-badge">
-                        SALE
-                    </span>
-
-                    <span class="product-badge discount">
-                        -${discountPercent}%
-                    </span>
-                    `
-                    :
-                    ""
-                }
-
-
-                ${
-                    product.stock <= 5
-                    ?
-                    `
-                    <span
-                        class="product-badge"
-                        style="top:${hasDiscount ? "83px" : "13px"}">
-                        LOW STOCK
-                    </span>
-                    `
-                    :
-                    ""
-                }
-
-
-                <button
-                    class="
-                        product-heart
-                        ${liked ? "liked" : ""}
-                    "
-                    data-wishlist="${escapeHTML(product.id)}">
-
-                    <i class="
-                        ${liked
-                            ? "fa-solid"
-                            : "fa-regular"}
-                        fa-heart
-                    "></i>
-
-                </button>
-
-
-                <a
-                    href="product.html?id=${encodeURIComponent(product.id)}"
-                    class="product-view">
-
-                    VIEW PRODUCT
-                    <i class="fa-solid fa-arrow-right"></i>
-
-                </a>
-
-            </div>
-
-
-            <div class="product-info">
-
-                <span class="product-category">
-                    ${escapeHTML(product.category)}
-                </span>
-
-                <h3 class="product-name">
-                    ${escapeHTML(productName)}
-                </h3>
-
-
-                <div class="product-price">
-
-                    <span class="current-price">
-                        ৳${formatNumber(
-                            product.discountPrice
-                        )}
-                    </span>
-
-                    ${
-                        hasDiscount
-                        ?
-                        `
-                        <span class="old-price">
-                            ৳${formatNumber(
-                                product.price
-                            )}
-                        </span>
-                        `
-                        :
-                        ""
-                    }
-
-                </div>
-
-
-                <div class="
-                    product-stock
-                    ${
-                        product.stock > 0
-                            ? "in-stock"
-                            : "out-stock"
-                    }
-                ">
-
-                    ${
-                        product.stock > 0
-                            ? `● ${product.stockStatus}`
-                            : "● Out of Stock"
-                    }
-
-                </div>
-
-            </div>
-
-        </article>
-
-    `;
-
-}
-
-
-/* =====================================================
-   PRODUCT EVENTS
-===================================================== */
-
-function attachProductEvents() {
-
-    document
-        .querySelectorAll("[data-wishlist]")
-        .forEach(button => {
-
-            button.addEventListener(
-                "click",
-                event => {
-
-                    event.preventDefault();
-
-                    event.stopPropagation();
-
-                    toggleWishlist(
-                        button.dataset.wishlist
-                    );
-
-                }
-            );
-
-        });
-
-}
-
-
-/* =====================================================
-   CATEGORY
-===================================================== */
-
-function shopCategory(category) {
-
-    currentCategory = category;
-
-    document
-        .querySelectorAll(".filter-btn")
-        .forEach(button => {
-
-            button.classList.toggle(
-                "active",
-                button.dataset.category === category
-            );
-
-        });
-
-
-    renderProducts();
-
-    document
-        .getElementById("popular")
-        ?.scrollIntoView({
-            behavior: "smooth"
-        });
-
-}
-
-
-/* Make available to HTML onclick */
-
-window.shopCategory =
-    shopCategory;
-
-
-/* =====================================================
-   FILTER
-===================================================== */
-
-function filterProducts(category) {
-
-    currentCategory = category;
-
-    document
-        .querySelectorAll(".filter-btn")
-        .forEach(button => {
-
-            button.classList.toggle(
-                "active",
-                button.dataset.category === category
-            );
-
-        });
-
-    renderProducts();
-
-}
-
-
-/* =====================================================
-   SEARCH
-===================================================== */
-
-function searchProducts(query) {
-
-    const text =
-        query.trim().toLowerCase();
-
-
-    if (!text) {
-
-        renderProducts();
-
-        return;
-
-    }
-
-
-    let list =
-        products.map(normalizeProduct);
-
-
-    list =
-        list.filter(product => {
-
-            const searchable = [
-
-                product.name,
-
-                product.banglaName,
-
-                product.category,
-
-                product.description,
-
-                ...(product.colors || []),
-
-                ...(product.sizes || [])
-
-            ]
-            .join(" ")
-            .toLowerCase();
-
-
-            return searchable.includes(text);
-
-        });
-
-
-    filteredProducts = list;
-
-
-    if (list.length === 0) {
-
-        productsGrid.innerHTML = "";
-
-        emptyProducts.classList.remove("hidden");
-
-        return;
-
-    }
-
-
-    emptyProducts.classList.add("hidden");
-
-
-    productsGrid.innerHTML =
-        list.map(
-            (product, index) =>
-                productCardHTML(
-                    product,
-                    index
-                )
-        ).join("");
-
-
-    attachProductEvents();
-
-
-    document
-        .getElementById("popular")
-        ?.scrollIntoView({
-            behavior: "smooth"
-        });
-
-}
-
-
-/* =====================================================
-   CART
-===================================================== */
-
-function addToCart(productId, options = {}) {
-
-    const product =
-        products
-            .map(normalizeProduct)
-            .find(
-                item =>
-                    item.id === productId
-            );
-
-
-    if (!product) {
-
-        showToast("Product not found");
-
-        return;
-
-    }
-
-
-    if (product.stock <= 0) {
-
-        showToast("Product is out of stock");
-
-        return;
-
-    }
-
-
-    const size =
-        options.size ||
-        product.sizes?.[0] ||
-        "";
-
-    const color =
-        options.color ||
-        product.colors?.[0] ||
-        "";
-
-
-    const existing =
-        cart.find(
-            item =>
-                item.id === productId &&
-                item.size === size &&
-                item.color === color
-        );
-
-
-    if (existing) {
-
-        if (existing.quantity >= product.stock) {
-
-            showToast("Stock limit reached");
-
-            return;
-
-        }
-
-        existing.quantity += 1;
-
-    } else {
-
-        cart.push({
-
-            id: product.id,
-
-            name: product.name,
-
-            banglaName:
-                product.banglaName,
-
-            price:
-                product.discountPrice,
-
-            image:
-                product.images[0],
-
-            size,
-
-            color,
-
-            quantity: 1
-
-        });
-
-    }
-
-
-    saveCart();
-
-    renderCart();
-
-    updateCounts();
-
-    showToast(
-        currentLanguage === "bn"
-            ? "কার্টে যোগ হয়েছে"
-            : "Added to cart"
-    );
-
-}
-
-
-/* Available globally for product.html */
-
-window.addToCart =
-    addToCart;
-
-
-/* =====================================================
-   REMOVE CART
-===================================================== */
-
-function removeFromCart(index) {
-
-    cart.splice(index, 1);
-
-    saveCart();
-
-    renderCart();
-
-    updateCounts();
-
-}
-
-
-/* =====================================================
-   UPDATE QUANTITY
-===================================================== */
-
-function changeQuantity(index, amount) {
-
-    if (!cart[index]) return;
-
-
-    cart[index].quantity += amount;
-
-
-    if (cart[index].quantity <= 0) {
-
-        cart.splice(index, 1);
-
-    }
-
-
-    saveCart();
-
-    renderCart();
-
-    updateCounts();
-
-}
-
-
-/* =====================================================
-   RENDER CART
-===================================================== */
-
-function renderCart() {
-
-    if (!cartItems) return;
-
-
-    if (cart.length === 0) {
-
-        cartItems.innerHTML = "";
-
-        cartEmpty.style.display = "flex";
-
-        document
-            .getElementById("checkoutBtn")
-            ?.setAttribute(
-                "disabled",
-                "disabled"
-            );
-
-        cartTotal.textContent = "৳0";
-
-        return;
-
-    }
-
-
-    cartEmpty.style.display = "none";
-
-    document
-        .getElementById("checkoutBtn")
-        ?.removeAttribute("disabled");
-
-
-    cartItems.innerHTML =
-        cart.map(
-            (item, index) => `
-
-                <div class="cart-item">
-
-                    <img
-                        src="${escapeHTML(item.image)}"
-                        alt="${escapeHTML(item.name)}">
-
-                    <div>
-
-                        <h4>
-                            ${
-                                currentLanguage === "bn"
-                                ? escapeHTML(
-                                    item.banglaName ||
-                                    item.name
-                                )
-                                : escapeHTML(
-                                    item.name
-                                )
-                            }
-                        </h4>
-
-                        <div class="cart-item-price">
-                            ৳${formatNumber(item.price)}
-                        </div>
-
-                        ${
-                            item.size
-                            ?
-                            `
-                            <small>
-                                Size: ${escapeHTML(item.size)}
-                            </small>
-                            `
-                            :
-                            ""
-                        }
-
-                        ${
-                            item.color
-                            ?
-                            `
-                            <small>
-                                Color: ${escapeHTML(item.color)}
-                            </small>
-                            `
-                            :
-                            ""
-                        }
-
-                        <div class="quantity-box">
-
-                            <button
-                                onclick="changeQuantity(${index}, -1)">
-                                −
-                            </button>
-
-                            <span>
-                                ${item.quantity}
-                            </span>
-
-                            <button
-                                onclick="changeQuantity(${index}, 1)">
-                                +
-                            </button>
-
-                        </div>
-
-                    </div>
-
-
-                    <button
-                        class="cart-remove"
-                        onclick="removeFromCart(${index})">
-
-                        <i class="fa-solid fa-trash"></i>
-
-                    </button>
-
-                </div>
-
-            `
-        ).join("");
-
-
-    const total =
-        cart.reduce(
-            (sum, item) =>
-                sum +
-                (
-                    Number(item.price) *
-                    Number(item.quantity)
-                ),
-            0
-        );
-
-
-    cartTotal.textContent =
-        "৳" + formatNumber(total);
-
-}
-
-
-/* Make functions available */
-
-window.changeQuantity =
-    changeQuantity;
-
-window.removeFromCart =
-    removeFromCart;
-
-
-/* =====================================================
-   SAVE CART
-===================================================== */
-
-function saveCart() {
-
-    localStorage.setItem(
-        "underworldCart",
-        JSON.stringify(cart)
-    );
-
-}
-
-
-/* =====================================================
-   WISHLIST
-===================================================== */
-
-function toggleWishlist(productId) {
-
-    const index =
-        wishlist.indexOf(productId);
-
-
-    if (index >= 0) {
-
-        wishlist.splice(index, 1);
-
-        showToast(
-            currentLanguage === "bn"
-                ? "Wishlist থেকে সরানো হয়েছে"
-                : "Removed from wishlist"
-        );
-
-    } else {
-
-        wishlist.push(productId);
-
-        showToast(
-            currentLanguage === "bn"
-                ? "Wishlist-এ যোগ হয়েছে"
-                : "Added to wishlist"
-        );
-
-    }
-
-
-    localStorage.setItem(
-        "underworldWishlist",
-        JSON.stringify(wishlist)
-    );
-
-
-    updateCounts();
-
-    renderProducts();
-
-    renderWishlist();
-
-}
-
-
-/* =====================================================
-   WISHLIST RENDER
-===================================================== */
-
-function renderWishlist() {
-
-    if (!wishlistItems) return;
-
-
-    const list =
-        products
-            .map(normalizeProduct)
-            .filter(
-                product =>
-                    wishlist.includes(product.id)
-            );
-
-
-    if (list.length === 0) {
-
-        wishlistItems.innerHTML = `
-
-            <div class="cart-empty">
-
-                <i class="fa-regular fa-heart"></i>
-
-                <h3>
-                    Your wishlist is empty
-                </h3>
-
-                <p>
-                    Save your favourite products here.
-                </p>
-
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    wishlistItems.innerHTML =
-        list.map(product => {
-
-            const name =
-                currentLanguage === "bn"
-                    ? product.banglaName
-                    : product.name;
-
-
-            return `
-
-                <div class="wishlist-item">
-
-                    <img
-                        src="${escapeHTML(product.images[0])}"
-                        alt="${escapeHTML(name)}">
-
-
-                    <div>
-
-                        <h4>
-                            ${escapeHTML(name)}
-                        </h4>
-
-                        <strong>
-                            ৳${formatNumber(
-                                product.discountPrice
-                            )}
-                        </strong>
-
-                        <br>
-
-                        <button
-                            onclick="removeWishlist('${escapeHTML(product.id)}')">
-
-                            Remove
-
-                        </button>
-
-                    </div>
-
-
-                    <a
-                        href="product.html?id=${encodeURIComponent(product.id)}">
-
-                        <i class="fa-solid fa-arrow-right"></i>
-
-                    </a>
-
-                </div>
-
-            `;
-
-        }).join("");
-
-}
-
-
-/* =====================================================
-   REMOVE WISHLIST
-===================================================== */
-
-function removeWishlist(productId) {
-
-    wishlist =
-        wishlist.filter(
-            id => id !== productId
-        );
-
-    localStorage.setItem(
-        "underworldWishlist",
-        JSON.stringify(wishlist)
-    );
-
-    updateCounts();
-
-    renderWishlist();
-
-    renderProducts();
-
-}
-
-
-/* Global */
-
-window.removeWishlist =
-    removeWishlist;
-
-
-/* =====================================================
-   COUNTS
-===================================================== */
-
-function updateCounts() {
-
-    const totalCart =
-        cart.reduce(
-            (sum, item) =>
-                sum + Number(item.quantity),
-            0
-        );
-
-
-    cartCount.textContent =
-        totalCart;
-
-    wishlistCount.textContent =
-        wishlist.length;
-
-}
-
-
-/* =====================================================
-   CHECKOUT
-===================================================== */
-
-function openCheckout() {
-
-    if (cart.length === 0) {
-
-        showToast(
-            currentLanguage === "bn"
-                ? "আপনার কার্ট খালি"
-                : "Your cart is empty"
-        );
-
-        return;
-
-    }
-
-
-    const total =
-        cart.reduce(
-            (sum, item) =>
-                sum +
-                item.price *
-                item.quantity,
-            0
-        );
-
-
-    document
-        .getElementById("checkoutItemsCount")
-        .textContent =
-        cart.reduce(
-            (sum, item) =>
-                sum + item.quantity,
-            0
-        );
-
-
-    document
-        .getElementById("checkoutTotal")
-        .textContent =
-        "৳" + formatNumber(total);
-
-
-    openModal(
-        "checkoutModal"
-    );
-
-}
-
-
-/* =====================================================
-   PLACE ORDER
-===================================================== */
-
-async function placeOrder(event) {
-
-    event.preventDefault();
-
-
-    if (cart.length === 0) {
-
-        showToast("Your cart is empty");
-
-        return;
-
-    }
-
+document.getElementById("languageBtn")
+  .onclick = () => {
 
     const button =
-        event.target.querySelector(
-            'button[type="submit"]'
-        );
+      document.getElementById("languageBtn");
 
+    if(button.textContent === "EN"){
 
-    button.disabled = true;
+      button.textContent = "বাং";
 
-    button.innerHTML =
-        "PROCESSING...";
+      document.querySelector(".hero-small").textContent =
+        "উইমেন কালেকশন";
 
+    }else{
 
-    const order = {
+      button.textContent = "EN";
 
-        customer: {
-
-            name:
-                document
-                .getElementById(
-                    "customerName"
-                )
-                .value
-                .trim(),
-
-            phone:
-                document
-                .getElementById(
-                    "customerPhone"
-                )
-                .value
-                .trim(),
-
-            address:
-                document
-                .getElementById(
-                    "customerAddress"
-                )
-                .value
-                .trim(),
-
-            district:
-                document
-                .getElementById(
-                    "customerDistrict"
-                )
-                .value
-                .trim()
-
-        },
-
-        paymentMethod:
-            document
-            .getElementById(
-                "paymentMethod"
-            )
-            .value,
-
-        items:
-            cart,
-
-        total:
-            cart.reduce(
-                (sum, item) =>
-                    sum +
-                    item.price *
-                    item.quantity,
-                0
-            ),
-
-        status:
-            "Pending",
-
-        createdAt:
-            serverTimestamp()
-
-    };
-
-
-    try {
-
-        const orderRef =
-            await addDoc(
-                collection(db, "orders"),
-                order
-            );
-
-
-        console.log(
-            "Order created:",
-            orderRef.id
-        );
-
-
-        cart = [];
-
-        saveCart();
-
-        renderCart();
-
-        updateCounts();
-
-        closeModal(
-            "checkoutModal"
-        );
-
-
-        event.target.reset();
-
-
-        showToast(
-            currentLanguage === "bn"
-                ? "অর্ডার সফলভাবে নেওয়া হয়েছে"
-                : "Order placed successfully"
-        );
-
-
-        closeDrawer();
-
-    } catch (error) {
-
-        console.error(error);
-
-        showToast(
-            "Order failed. Please check Firebase."
-        );
+      document.querySelector(".hero-small").textContent =
+        "WOMEN COLLECTION";
 
     }
 
-
-    button.disabled = false;
-
-    button.innerHTML =
-        `
-        PLACE ORDER
-        <i class="fa-solid fa-check"></i>
-        `;
-
-}
+  };
 
 
-/* =====================================================
-   LANGUAGE
-===================================================== */
+/* =========================
+   MODAL CLOSE
+========================= */
 
-function setLanguage(language) {
+function closeModal(id){
 
-    currentLanguage = language;
-
-    localStorage.setItem(
-        "underworldLanguage",
-        language
-    );
-
-
-    document.documentElement
-        .setAttribute(
-            "lang",
-            language === "bn"
-                ? "bn"
-                : "en"
-        );
-
-
-    document
-        .querySelectorAll("[data-en][data-bn]")
-        .forEach(element => {
-
-            element.textContent =
-                language === "bn"
-                    ? element.dataset.bn
-                    : element.dataset.en;
-
-        });
-
-
-    const languageText =
-        document.getElementById(
-            "languageText"
-        );
-
-
-    if (languageText) {
-
-        languageText.textContent =
-            language === "en"
-                ? "বাংলা"
-                : "English";
-
-    }
-
-
-    if (products.length) {
-
-        renderProducts();
-
-        renderCart();
-
-        renderWishlist();
-
-    }
+  document.getElementById(id)
+    .classList.remove("open");
 
 }
 
+document.getElementById("closeProduct")
+  .onclick = () => closeModal("productModal");
 
-/* =====================================================
-   HERO SLIDER
-===================================================== */
+document.getElementById("closeCheckout")
+  .onclick = () => closeModal("checkoutModal");
 
-let currentSlide = 0;
 
-let heroTimer;
+document.querySelectorAll(".modal")
+  .forEach(modal => {
 
+    modal.addEventListener("click",e => {
 
-function setupHero() {
+      if(e.target === modal){
+        modal.classList.remove("open");
+      }
 
-    const slides =
-        document.querySelectorAll(
-            ".hero-slide"
-        );
+    });
 
-    const dots =
-        document.querySelectorAll(
-            ".hero-dot"
-        );
+  });
 
 
-    if (!slides.length) return;
-
-
-    function showSlide(index) {
-
-        currentSlide =
-            (index + slides.length) %
-            slides.length;
-
-
-        slides.forEach(
-            (slide, i) => {
-
-                slide.classList.toggle(
-                    "active",
-                    i === currentSlide
-                );
-
-            }
-        );
-
-
-        dots.forEach(
-            (dot, i) => {
-
-                dot.classList.toggle(
-                    "active",
-                    i === currentSlide
-                );
-
-            }
-        );
-
-    }
-
-
-    function nextSlide() {
-
-        showSlide(
-            currentSlide + 1
-        );
-
-    }
-
-
-    function prevSlide() {
-
-        showSlide(
-            currentSlide - 1
-        );
-
-    }
-
-
-    document
-        .getElementById("heroNext")
-        ?.addEventListener(
-            "click",
-            () => {
-
-                nextSlide();
-
-                resetHeroTimer();
-
-            }
-        );
-
-
-    document
-        .getElementById("heroPrev")
-        ?.addEventListener(
-            "click",
-            () => {
-
-                prevSlide();
-
-                resetHeroTimer();
-
-            }
-        );
-
-
-    dots.forEach(
-        dot => {
-
-            dot.addEventListener(
-                "click",
-                () => {
-
-                    showSlide(
-                        Number(
-                            dot.dataset.slide
-                        )
-                    );
-
-                    resetHeroTimer();
-
-                }
-            );
-
-        }
-    );
-
-
-    function resetHeroTimer() {
-
-        clearInterval(heroTimer);
-
-        heroTimer =
-            setInterval(
-                nextSlide,
-                5500
-            );
-
-    }
-
-
-    showSlide(0);
-
-    resetHeroTimer();
-
-}
-
-
-/* =====================================================
-   EVENTS
-===================================================== */
-
-function setupEvents() {
-
-
-    /* SEARCH */
-
-    document
-        .getElementById("searchBtn")
-        ?.addEventListener(
-            "click",
-            () =>
-                openSearch()
-        );
-
-
-    document
-        .getElementById("closeSearch")
-        ?.addEventListener(
-            "click",
-            () =>
-                closeSearch()
-        );
-
-
-    document
-        .getElementById("searchInput")
-        ?.addEventListener(
-            "input",
-            event =>
-                searchProducts(
-                    event.target.value
-                )
-        );
-
-
-    /* CART */
-
-    document
-        .getElementById("cartBtn")
-        ?.addEventListener(
-            "click",
-            () =>
-                openDrawer(
-                    "cartDrawer"
-                )
-        );
-
-
-    document
-        .getElementById("closeCart")
-        ?.addEventListener(
-            "click",
-            closeDrawer
-        );
-
-
-    document
-        .getElementById("drawerOverlay")
-        ?.addEventListener(
-            "click",
-            closeDrawer
-        );
-
-
-    /* WISHLIST */
-
-    document
-        .getElementById("wishlistBtn")
-        ?.addEventListener(
-            "click",
-            () =>
-                openDrawer(
-                    "wishlistDrawer"
-                )
-        );
-
-
-    document
-        .getElementById("closeWishlist")
-        ?.addEventListener(
-            "click",
-            closeDrawer
-        );
-
-
-    /* ACCOUNT */
-
-    document
-        .getElementById("accountBtn")
-        ?.addEventListener(
-            "click",
-            () =>
-                openModal(
-                    "accountModal"
-                )
-        );
-
-
-    document
-        .getElementById("closeAccount")
-        ?.addEventListener(
-            "click",
-            () =>
-                closeModal(
-                    "accountModal"
-                )
-        );
-
-
-    document
-        .getElementById("continueShopping")
-        ?.addEventListener(
-            "click",
-            () =>
-                closeModal(
-                    "accountModal"
-                )
-        );
-
-
-    /* CHECKOUT */
-
-    document
-        .getElementById("checkoutBtn")
-        ?.addEventListener(
-            "click",
-            openCheckout
-        );
-
-
-    document
-        .getElementById("closeCheckout")
-        ?.addEventListener(
-            "click",
-            () =>
-                closeModal(
-                    "checkoutModal"
-                )
-        );
-
-
-    document
-        .getElementById("checkoutForm")
-        ?.addEventListener(
-            "submit",
-            placeOrder
-        );
-
-
-    /* LANGUAGE */
-
-    document
-        .getElementById("languageBtn")
-        ?.addEventListener(
-            "click",
-            () => {
-
-                setLanguage(
-                    currentLanguage === "en"
-                        ? "bn"
-                        : "en"
-                );
-
-            }
-        );
-
-
-    /* FILTERS */
-
-    document
-        .querySelectorAll(".filter-btn")
-        .forEach(
-            button => {
-
-                button.addEventListener(
-                    "click",
-                    () =>
-                        filterProducts(
-                            button.dataset.category
-                        )
-                );
-
-            }
-        );
-
-
-    /* VIEW ALL */
-
-    document
-        .getElementById("viewAllBtn")
-        ?.addEventListener(
-            "click",
-            () => {
-
-                currentCategory = "All";
-
-                document
-                    .querySelectorAll(".filter-btn")
-                    .forEach(button => {
-
-                        button.classList.toggle(
-                            "active",
-                            button.dataset.category === "All"
-                        );
-
-                    });
-
-                renderProducts();
-
-            }
-        );
-
-
-    document
-        .getElementById("loadMoreBtn")
-        ?.addEventListener(
-            "click",
-            () => {
-
-                document
-                    .getElementById("popular")
-                    ?.scrollIntoView({
-                        behavior: "smooth"
-                    });
-
-            }
-        );
-
-
-    /* MOBILE */
-
-    document
-        .getElementById("mobileMenuBtn")
-        ?.addEventListener(
-            "click",
-            () =>
-                document
-                    .getElementById("mobileMenu")
-                    .classList.add("open")
-        );
-
-
-    document
-        .getElementById("mobileClose")
-        ?.addEventListener(
-            "click",
-            () =>
-                document
-                    .getElementById("mobileMenu")
-                    .classList.remove("open")
-        );
-
-
-    document
-        .querySelectorAll(".mobile-menu a")
-        .forEach(link => {
-
-            link.addEventListener(
-                "click",
-                () =>
-                    document
-                        .getElementById("mobileMenu")
-                        .classList.remove("open")
-            );
-
-        });
-
-
-    /* HEADER SCROLL */
-
-    window.addEventListener(
-        "scroll",
-        () => {
-
-            document
-                .getElementById("header")
-                ?.classList.toggle(
-                    "scrolled",
-                    window.scrollY > 20
-                );
-
-        }
-    );
-
-
-    /* ESCAPE */
-
-    document.addEventListener(
-        "keydown",
-        event => {
-
-            if (event.key === "Escape") {
-
-                closeSearch();
-
-                closeDrawer();
-
-                closeModal(
-                    "accountModal"
-                );
-
-                closeModal(
-                    "checkoutModal"
-                );
-
-            }
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   SEARCH OPEN/CLOSE
-===================================================== */
-
-function openSearch() {
-
-    const panel =
-        document.getElementById(
-            "searchPanel"
-        );
-
-    panel.classList.add("open");
-
-    document.body.classList.add(
-        "no-scroll"
-    );
-
-    setTimeout(
-        () =>
-            document
-                .getElementById("searchInput")
-                ?.focus(),
-        250
-    );
-
-}
-
-
-function closeSearch() {
-
-    document
-        .getElementById("searchPanel")
-        ?.classList.remove("open");
-
-    document.body.classList.remove(
-        "no-scroll"
-    );
-
-}
-
-
-/* =====================================================
-   DRAWER
-===================================================== */
-
-function openDrawer(id) {
-
-    closeDrawer();
-
-    document
-        .getElementById(id)
-        ?.classList.add("open");
-
-    document
-        .getElementById("drawerOverlay")
-        ?.classList.add("open");
-
-    document.body.classList.add(
-        "no-scroll"
-    );
-
-}
-
-
-function closeDrawer() {
-
-    document
-        .querySelectorAll(".side-drawer")
-        .forEach(
-            drawer =>
-                drawer.classList.remove("open")
-        );
-
-    document
-        .getElementById("drawerOverlay")
-        ?.classList.remove("open");
-
-    document.body.classList.remove(
-        "no-scroll"
-    );
-
-}
-
-
-/* =====================================================
-   MODAL
-===================================================== */
-
-function openModal(id) {
-
-    document
-        .getElementById(id)
-        ?.classList.add("open");
-
-    document.body.classList.add(
-        "no-scroll"
-    );
-
-}
-
-
-function closeModal(id) {
-
-    document
-        .getElementById(id)
-        ?.classList.remove("open");
-
-    document.body.classList.remove(
-        "no-scroll"
-    );
-
-}
-
-
-/* =====================================================
+/* =========================
    TOAST
-===================================================== */
+========================= */
 
 let toastTimer;
 
+function showToast(message){
 
-function showToast(message) {
+  const toast =
+    document.getElementById("toast");
 
-    const toast =
-        document.getElementById("toast");
+  toast.textContent = message;
 
-    const text =
-        document.getElementById(
-            "toastMessage"
-        );
+  toast.classList.add("show");
 
+  clearTimeout(toastTimer);
 
-    if (!toast || !text) return;
+  toastTimer =
+    setTimeout(() => {
 
+      toast.classList.remove("show");
 
-    text.textContent = message;
-
-    toast.classList.add("show");
-
-
-    clearTimeout(toastTimer);
-
-
-    toastTimer =
-        setTimeout(
-            () =>
-                toast.classList.remove(
-                    "show"
-                ),
-            2500
-        );
+    },2500);
 
 }
 
 
-/* =====================================================
-   HELPERS
-===================================================== */
+/* =========================
+   SECURITY / HTML
+========================= */
 
-function formatNumber(number) {
+function escapeHTML(value){
 
-    return Number(number || 0)
-        .toLocaleString("en-BD");
-
-}
-
-
-function escapeHTML(value) {
-
-    return String(value ?? "")
-        .replace(
-            /[&<>"']/g,
-            character => ({
-
-                "&": "&amp;",
-
-                "<": "&lt;",
-
-                ">": "&gt;",
-
-                '"': "&quot;",
-
-                "'": "&#039;"
-
-            }[character])
-        );
+  return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 
 }
+
+
+/* =========================
+   START
+========================= */
+
+renderCart();
+
+loadProducts();
